@@ -6,7 +6,6 @@ import {
   ListView,
   Button,
   Image,
-  TouchableHighlight,
   TouchableOpacity,
   StyleSheet
 } from 'react-native'
@@ -19,9 +18,9 @@ class Home extends React.Component {
   static navigationOptions = {
     drawer: () => ({
       label: '首页',
-      icon: ({ tintColor }) => (
-        <Text>2</Text>
-      ),
+      // icon: ({ tintColor }) => (
+        // <Text></Text>
+      // ),
     }),
     header: ({ navigate }) => {
       title = '首页';
@@ -33,7 +32,6 @@ class Home extends React.Component {
           />
         </TouchableOpacity>
       )
-
       return { title, left };
     }
   };
@@ -62,9 +60,9 @@ class Home extends React.Component {
   _renderRow(rowData) {
     const { navigate } = this.props.navigation;
     return (
-      <TouchableHighlight  onPress={() => navigate('Topics', { topic: rowData.title})}>
+      <TouchableOpacity  onPress={() => navigate('Topics', { topic: rowData.title})}>
         <Text>{ rowData.title ? rowData.title : null}</Text>
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
   render() {
@@ -99,21 +97,22 @@ class Topics extends React.Component {
 const HomeStack = StackNavigator(
   {
     Home: { screen: Home },
+    Topics: { screen: Topics }
   },
-  {
-    headerMode: 'none'
-  }
 );
 
 const DrawerNav = DrawerNavigator({
   Home: { screen: HomeStack },
+}, {
+  drawerWidth: 250,
+  drawerPosition: 'left'
 });
 
-const App = StackNavigator(
-  {
-    Home: { screen: DrawerNav },
-    Topics: { screen: Topics }
-  }
-);
+// const App = StackNavigator(
+//   {
+//     Home: { screen: DrawerNav },
+//     Topics: { screen: Topics }
+//   }
+// );
 
-export default App
+export default DrawerNav
