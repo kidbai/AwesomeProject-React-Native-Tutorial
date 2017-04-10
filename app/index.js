@@ -16,14 +16,12 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class Home extends React.Component {
   static navigationOptions = {
-    drawer: () => ({
-      label: '首页',
-      // icon: ({ tintColor }) => (
-        // <Text></Text>
-      // ),
-    }),
-    header: ({ navigate }) => {
-      title = '首页';
+    drawer: ({ state }) => {
+      label = state.routeName;
+      return  { label } ;
+    },
+    header: ({ navigate, state }) => {
+      title = state.routeName;
       left = (
         <TouchableOpacity onPress={() => navigate('DrawerOpen') }>
           <Image
@@ -80,6 +78,32 @@ class Home extends React.Component {
   }
 }
 
+class Good extends React.Component {
+  static navigationOptions = {
+    drawer: () => ({
+      label: 'Good',
+    }),
+    header: ({ navigate, state }) => {
+      title = state.routeName,
+      left = (
+        <TouchableOpacity onPress={() => navigate('DrawerOpen') }>
+          <Image
+            source={{ uri: 'https://cdn0.iconfinder.com/data/icons/ui-glyph/100/burger_menu-256.png' }}
+            style={{ width: 30, height: 30, marginLeft: 10 }}
+          />
+        </TouchableOpacity>
+      )
+      return { title, left };
+    }
+
+  };
+  render() {
+    return (
+      <Text>Good</Text>
+    )
+  }
+}
+
 class Topics extends React.Component {
   static navigationOptions = {
     title: ({ state }) => `${state.params.topic}`,
@@ -99,20 +123,49 @@ const HomeStack = StackNavigator(
     Home: { screen: Home },
     Topics: { screen: Topics }
   },
+  {
+    initialRouteName: 'Home',
+    headerMode: 'screen',
+  }
 );
 
-const DrawerNav = DrawerNavigator({
-  Home: { screen: HomeStack },
+const GoodStack = StackNavigator(
+  {
+    Good: { screen: Home },
+    Topics: { screen: Topics }
+  },
+  {
+    initialRouteName: 'Good',
+    headerMode: 'screen',
+  }
+);
+
+const Drawer = DrawerNavigator({
+  Drawer: {
+    name: 'Drawer',
+    screen: HomeStack
+  },
+  Good: {
+    name: 'Good',
+    screen: GoodStack
+  }
 }, {
+  initialRouteName: 'Drawer',
   drawerWidth: 250,
   drawerPosition: 'left'
 });
 
-// const App = StackNavigator(
-//   {
-//     Home: { screen: DrawerNav },
-//     Topics: { screen: Topics }
-//   }
-// );
+const App = StackNavigator(
+  {
+    Drawer: {
+      name: 'Drawer',
+      screen: Drawer
+    }
+  },
+  {
+    headerMode: 'none',
+    header: { visible: false },
+  }
+);
 
-export default DrawerNav
+export default App
