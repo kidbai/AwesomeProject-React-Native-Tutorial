@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import { getCnodeTopic } from '../api'
-import HTMLView from 'react-native-htmlview'
+import HTMLView from './components/html-view'
 
 class Topics extends React.Component {
   static navigationOptions = {
@@ -42,7 +42,7 @@ class Topics extends React.Component {
   }
   render() {
     return (
-      <HTMLView value={ this.state.topic.content || '' }/>
+      <HTMLView value={ this.state.topic.content || '' } />
     );
   }
 }

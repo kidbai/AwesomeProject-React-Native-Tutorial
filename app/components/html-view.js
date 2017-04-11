@@ -151,7 +151,7 @@ const defaultHtmlStyles = {
         paddingLeft: 20,
         borderLeftColor: '#3498DB',
         borderLeftWidth: 3
-    }
+    },
 }
 
 class HtmlView extends React.Component {
