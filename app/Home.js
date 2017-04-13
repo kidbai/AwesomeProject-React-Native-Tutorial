@@ -62,7 +62,7 @@ class Home extends React.Component {
   _renderRow(rowData) {
     const { navigate } = this.props.navigation
     return (
-      <TouchableOpacity  onPress={() => navigate('Topics', { topic: rowData.title , id: rowData.id })}>
+      <TouchableOpacity  onPress={() => navigate('Topic', { topic: rowData.title , id: rowData.id })}>
         <View style={ listStyle.list }>
           <View>
             <Text style={ listStyle.title }>{ rowData.title ? rowData.title : null}</Text>

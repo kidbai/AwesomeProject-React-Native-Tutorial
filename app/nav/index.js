@@ -1,13 +1,13 @@
 import { StackNavigator, DrawerNavigator } from 'react-navigation'
 import Home from '../Home'
 import Good from '../Good'
-import Topics from '../Topics'
+import Topic from '../Topic'
 
 
 const HomeStack = StackNavigator(
   {
     All: { screen: Home },
-    Topics: { screen: Topics }
+    Topic: { screen: Topic }
   },
   {
     initialRouteName: 'All',
@@ -18,7 +18,7 @@ const HomeStack = StackNavigator(
 const GoodStack = StackNavigator(
   {
     Good: { screen: Home },
-    Topics: { screen: Topics }
+    Topic: { screen: Topic }
   },
   {
     initialRouteName: 'Good',

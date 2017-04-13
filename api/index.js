@@ -5,6 +5,7 @@ const apiTopics = baseUrl + '/topics'
 const apiTopic = baseUrl + '/topic'
 
 export const getCnodeTopics = (params) => {
+  console.log(params)
   params = Object.assign({}, params, {
     page: 1,
     limit: 40

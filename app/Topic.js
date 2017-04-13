@@ -7,12 +7,13 @@ import {
   Button,
   Image,
   TouchableOpacity,
+  StyleSheet
 } from 'react-native'
 
 import { getCnodeTopic } from '../api'
 import HTMLView from './components/html-view'
 
-class Topics extends React.Component {
+class Topic extends React.Component {
   static navigationOptions = {
     title: ({ state }) => `${state.params.topic}`,
   };
@@ -42,9 +43,11 @@ class Topics extends React.Component {
   }
   render() {
     return (
-      <HTMLView value={ this.state.topic.content || '' } />
+      <View>
+        <HTMLView value={ this.state.topic.content || '' } />
+      </View>
     );
   }
 }
 
-export default Topics
+export default Topic
