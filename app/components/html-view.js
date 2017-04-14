@@ -108,7 +108,7 @@ class HtmlView extends React.Component {
       const uri = node.attribs.src
       console.log(uri)
       return (
-        <Image source={{uri: 'https://dn-cnode.qbox.me/FlwW5i2h_UuKpnBXXvD3AqyrwjHP'}} style={styles.image} key={'img_'+index} />
+        <Image source={{uri: uri}} style={styles.image} key={'img_'+index} />
       )
     }
   }
