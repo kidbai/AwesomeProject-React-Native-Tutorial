@@ -11,17 +11,19 @@ import {
 import { getPostType } from './utils'
 import { getCnodeTopics } from '../api'
 import listStyle from './style'
+import { tabFilter } from './filters'
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class Home extends React.Component {
   static navigationOptions = {
     drawer: ({ state }) => {
-      label = state.routeName;
+      label = tabFilter(state.routeName);
+
       return  { label } ;
     },
     header: ({ navigate, state }) => {
-      title = state.routeName;
+      title = tabFilter(state.routeName);
       left = (
         <TouchableOpacity onPress={() => navigate('DrawerOpen') }>
           <Image
@@ -67,8 +69,8 @@ class Home extends React.Component {
           <View>
             <Text style={ listStyle.title }>{ rowData.title ? rowData.title : null}</Text>
           </View>
-          <View>
-            <Text style={ [listStyle.tab, rowData.top || rowData.good ? listStyle.tabLight: ''] }>{ rowData.tab || 'good' }</Text>
+          <View style={ [listStyle.tab, rowData.top || rowData.good ? listStyle.tabLight: ''] }>
+            <Text style={ rowData.top || rowData.good ? listStyle.tabTextWhite: listStyle.tabTextGray }>{ tabFilter(rowData.tab) }</Text>
           </View>
         </View>
       </TouchableOpacity>

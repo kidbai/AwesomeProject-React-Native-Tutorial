@@ -19,22 +19,24 @@ const listStyle = StyleSheet.create({
   tab: {
     width: 50,
     height: 20,
-    color: '#999',
-    textAlign: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#e5e5e5',
     borderWidth: 1,
     borderRadius: 4,
     borderColor: '#e5e5e5',
-    marginTop: 4,
     overflow: 'hidden'
   },
   tabLight: {
     borderColor: '#80bd01',
-    borderWidth: 1,
-    borderRadius: 4,
     backgroundColor: '#80bd01',
+  },
+  tabTextWhite: {
     color: '#fff',
-    overflow: 'hidden'
+  },
+  tabTextGray: {
+    color: '#999',
   }
 })
 
