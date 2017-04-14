@@ -7,7 +7,9 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  RefreshControl
+  RefreshControl,
+  Dimensions,
+  ActivityIndicator
 } from 'react-native'
 import { getPostType } from './utils'
 import { getCnodeTopics } from '../api'
@@ -41,7 +43,8 @@ class Home extends React.Component {
 
     this.state = {
       topics: ds,
-      refreshing: false
+      refreshing: false,
+      loading: false
     }
   }
   fetchData() {
@@ -99,16 +102,35 @@ class Home extends React.Component {
         onRefresh={()=>this._onRefresh()} />
     )
   }
+  _endReached() {
+    console.log('end reached')
+    this.setState({
+      loading: true
+    })
+    setTimeout(() => {
+      this.setState({
+        loading: false
+      })
+    }, 1000)
+  }
   render() {
     const { navigate } = this.props.navigation
     return (
       <View>
+        <ActivityIndicator
+          animating={this.state.loading}
+          color='#000'
+          size='large'
+          style={{position: 'absolute', width: 100, height:100, top: 150, left: (Dimensions.get('window').width / 2) - 50, zIndex: 2}}
+        />
         <ListView
           dataSource={ this.state.topics }
           renderRow={ (rowData) =>
             this._renderRow(rowData)
           }
           refreshControl={this._refreshControl()}
+          onEndReached={this._endReached.bind(this)}
+          onEndReachedThreshold={10}
         />
       </View>
     )
