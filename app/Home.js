@@ -6,7 +6,8 @@ import {
   ListView,
   Button,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl
 } from 'react-native'
 import { getPostType } from './utils'
 import { getCnodeTopics } from '../api'
@@ -39,13 +40,14 @@ class Home extends React.Component {
     super(props)
 
     this.state = {
-      topics: ds
+      topics: ds,
+      refreshing: false
     }
   }
   fetchData() {
     const { state } = this.props.navigation
     const type = getPostType(state.routeName)
-    getCnodeTopics({
+    return getCnodeTopics({
       tab: type,
     })
       .then((res) => res.json())
@@ -53,6 +55,7 @@ class Home extends React.Component {
         this.setState({
           topics: ds.cloneWithRows(res.data)
         })
+        return 'success'
       })
       .catch((e) => {
         console.error(e)
@@ -76,6 +79,26 @@ class Home extends React.Component {
       </TouchableOpacity>
     )
   }
+  _onRefresh() {
+    this.setState({
+      refreshing: true
+    })
+    this.fetchData()
+    .then((res) => {
+      if(res === 'success') {
+        this.setState({
+          refreshing: false
+        })
+      }
+    })
+  }
+  _refreshControl() {
+    return (
+      <RefreshControl
+        refreshing={this.state.refreshing}
+        onRefresh={()=>this._onRefresh()} />
+    )
+  }
   render() {
     const { navigate } = this.props.navigation
     return (
@@ -85,6 +108,7 @@ class Home extends React.Component {
           renderRow={ (rowData) =>
             this._renderRow(rowData)
           }
+          refreshControl={this._refreshControl()}
         />
       </View>
     )
