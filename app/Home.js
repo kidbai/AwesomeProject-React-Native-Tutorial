@@ -42,22 +42,23 @@ class Home extends React.Component {
     super(props)
 
     this.state = {
+      topicsArr: [],
+      page: 1,
       topics: ds,
       refreshing: false,
-      loading: false
+      loading: false,
     }
   }
-  fetchData() {
-    const { state } = this.props.navigation
-    const type = getPostType(state.routeName)
-    return getCnodeTopics({
-      tab: type,
-    })
+  fetchData(params) {
+    return getCnodeTopics(params)
       .then((res) => res.json())
       .then((res) => {
+        var topicsArr = this.state.topicsArr.concat(res.data)
         this.setState({
-          topics: ds.cloneWithRows(res.data)
+          topicsArr: topicsArr,
+          topics: ds.cloneWithRows(topicsArr)
         })
+
         return 'success'
       })
       .catch((e) => {
@@ -65,7 +66,15 @@ class Home extends React.Component {
       })
   }
   componentWillMount() {
-    this.fetchData()
+    const { state } = this.props.navigation
+    const type = getPostType(state.routeName)
+    this.setState({
+      topics: ds
+    })
+    this.fetchData({
+      tab: type,
+      page: this.state.page
+    })
   }
   _renderRow(rowData) {
     const { navigate } = this.props.navigation
@@ -83,10 +92,15 @@ class Home extends React.Component {
     )
   }
   _onRefresh() {
+    const { state } = this.props.navigation
+    const type = getPostType(state.routeName)
     this.setState({
       refreshing: true
     })
-    this.fetchData()
+    this.fetchData({
+      tab: type,
+      page: this.state.page
+    })
     .then((res) => {
       if(res === 'success') {
         this.setState({
@@ -103,15 +117,27 @@ class Home extends React.Component {
     )
   }
   _endReached() {
-    console.log('end reached')
+    if(this.state.loading) {
+      return false
+    }
+    const { state } = this.props.navigation
+    const type = getPostType(state.routeName)
+    let newPage = this.state.page + 1
     this.setState({
-      loading: true
+      loading: true,
+      page: newPage
     })
-    setTimeout(() => {
-      this.setState({
-        loading: false
-      })
-    }, 1000)
+    this.fetchData({
+      tab: type,
+      page: newPage
+    })
+    .then((res) => {
+      if(res === 'success') {
+        this.setState({
+          loading: false
+        })
+      }
+    })
   }
   render() {
     const { navigate } = this.props.navigation
