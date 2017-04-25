@@ -21,65 +21,73 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10
   },
+  p: {
+    fontSize: fontSize
+  },
   image: {
     width: screenWidth,
     height: screenWidth,
     resizeMode: Image.resizeMode.contain,
   },
+  ul: {
+    padding: 0,
+    marginBottom: 8,
+    marginLeft: 15
+  },
   h1: {
-      fontSize: fontSize * 1.6,
-      fontWeight: "bold",
-      color: 'rgba(0,0,0,0.8)',
-      textAlign: 'center'
+    fontSize: fontSize * 1.6,
+    fontWeight: "bold",
+    color: 'rgba(0,0,0,0.8)',
+    textAlign: 'center'
   },
   h1wrapper: {
-      marginTop: rowMargin,
-      marginBottom: rowMargin
+    marginTop: rowMargin,
+    marginBottom: rowMargin
   },
   h2: {
-      fontSize: fontSize * 1.5,
-      fontWeight: 'bold',
-      color: 'rgba(0,0,0,0.85)'
+    fontSize: fontSize * 1.5,
+    fontWeight: 'bold',
+    color: 'rgba(0,0,0,0.85)'
   },
   h2wrapper: {
-      marginBottom: rowMargin,
-      marginTop: rowMargin
+    marginBottom: rowMargin,
+    marginTop: rowMargin
   },
   h3: {
-      fontWeight: 'bold',
-      fontSize: fontSize * 1.4,
-      color: 'rgba(0,0,0,0.8)'
+    fontWeight: 'bold',
+    fontSize: fontSize * 1.4,
+    color: 'rgba(0,0,0,0.8)'
   },
   h3wrapper: {
-      marginBottom: rowMargin - 2,
-      marginTop: rowMargin - 2
+    marginBottom: rowMargin - 2,
+    marginTop: rowMargin - 2
   },
   h4: {
-      fontSize: fontSize * 1.3,
-      color: 'rgba(0,0,0,0.7)',
-      fontWeight: 'bold'
+    fontSize: fontSize * 1.3,
+    color: 'rgba(0,0,0,0.7)',
+    fontWeight: 'bold'
   },
   h4wrapper: {
-      marginBottom: rowMargin - 2,
-      marginTop: rowMargin - 2,
+    marginBottom: rowMargin - 2,
+    marginTop: rowMargin - 2,
   },
   h5: {
-      fontSize: fontSize * 1.2,
-      color: 'rgba(0,0,0,0.7)',
-      fontWeight: 'bold'
+    fontSize: fontSize * 1.2,
+    color: 'rgba(0,0,0,0.7)',
+    fontWeight: 'bold'
   },
   h5wrapper: {
-      marginBottom: rowMargin - 3,
-      marginTop: rowMargin - 3,
+    marginBottom: rowMargin - 3,
+    marginTop: rowMargin - 3,
   },
   h6: {
-      fontSize: fontSize * 1.1,
-      color: 'rgba(0,0,0,0.7)',
-      fontWeight: 'bold'
+    fontSize: fontSize * 1.1,
+    color: 'rgba(0,0,0,0.7)',
+    fontWeight: 'bold'
   },
   h6wrapper: {
-      marginBottom: rowMargin - 3,
-      marginTop: rowMargin - 3
+    marginBottom: rowMargin - 3,
+    marginTop: rowMargin - 3
   },
 })
 
@@ -100,7 +108,7 @@ class HtmlView extends React.Component {
     if (node.name == 'iframe') {
       return (
         <View key={'iframe_'+index} style={{width: 200, height: 200}}>
-        <Text>{node.attribs.src}</Text>
+          <Text>{node.attribs.src}</Text>
         </View>
       )
     }
@@ -116,7 +124,9 @@ class HtmlView extends React.Component {
   render() {
     const { value } = this.props
     return (
-        <RNHtmlView value={value} stylesheet={styles} onLinkPress={this._handleLinkPress} renderNode={this._renderNode} />
+        <View>
+          <RNHtmlView value={value} stylesheet={styles} onLinkPress={this._handleLinkPress} renderNode={this._renderNode} />
+        </View>
     )
   }
 }

@@ -3,6 +3,7 @@ import {
   AppRegistry,
   Text,
   View,
+  ScrollView,
   ListView,
   Button,
   Image,
@@ -12,6 +13,7 @@ import {
 
 import { getCnodeTopic } from '../api'
 import HTMLView from './components/html-view'
+import markDownStyle from './style/mark-down'
 
 class Topic extends React.Component {
   static navigationOptions = {
@@ -29,7 +31,6 @@ class Topic extends React.Component {
     getCnodeTopic(params.id)
       .then((res) => res.json())
       .then((res) => {
-
         this.setState({
           topic: res.data
         })
@@ -43,9 +44,9 @@ class Topic extends React.Component {
   }
   render() {
     return (
-      <View>
+      <ScrollView style={ markDownStyle.markDown }>
         <HTMLView value={ this.state.topic.content || '' } />
-      </View>
+      </ScrollView>
     );
   }
 }
