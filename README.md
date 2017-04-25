@@ -15,3 +15,7 @@ Cnode React-Native App
   - run AwesomeProject.xcodeproj on Xcode
 
   - open simulator
+
+# Screenshots
+
+![screenshot](/img/cnode.gitf)
