@@ -18,4 +18,4 @@ Cnode React-Native App
 
 # Screenshots
 
-![screenshot](/img/cnode.gitf)
+![screenshot](https://github.com/kidbai/AwesomeProject-React-Native-Tutorial/raw/master/img/cnode.gif)
