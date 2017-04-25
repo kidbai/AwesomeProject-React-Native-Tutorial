@@ -6,12 +6,12 @@ Cnode React-Native App
 
 # Install
 
-  git clone https://github.com/kidbai/AwesomeProject-React-Native-Tutorial.git
+  ```git clone https://github.com/kidbai/AwesomeProject-React-Native-Tutorial.git```
 
 # Usage
 
-  npm run start
+  - ``` npm run start ```
 
-  run AwesomeProject.xcodeproj on Xcode
+  - run AwesomeProject.xcodeproj on Xcode
 
-  open simulator
+  - open simulator
