@@ -1,5 +1,7 @@
 # AwesomeProject-React-Native-Tutorial
 
+添加嵌入Android原生应用的功能
+
 Cnode React-Native App
 
 [Cnode Api](https://cnodejs.org/api)
