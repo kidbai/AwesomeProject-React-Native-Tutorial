@@ -87,7 +87,7 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        applicationId "com.awesomeproject"µ
+        applicationId "com.awesomeproject"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
