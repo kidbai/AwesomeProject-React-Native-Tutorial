@@ -30,7 +30,7 @@ class Home extends React.Component {
       left = (
         <TouchableOpacity onPress={() => navigate('DrawerOpen') }>
           <Image
-            source={{ uri: 'https://cdn0.iconfinder.com/data/icons/ui-glyph/100/burger_menu-256.png' }}
+            source={require('../img/burger_menu-256.png')}
             style={{ width: 30, height: 30, marginLeft: 10 }}
           />
         </TouchableOpacity>
