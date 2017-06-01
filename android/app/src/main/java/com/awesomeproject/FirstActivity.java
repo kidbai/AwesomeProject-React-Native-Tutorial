@@ -24,10 +24,10 @@ public class FirstActivity extends Activity {
         btn1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 给bnt1添加点击响应事件
-                Intent intent = new Intent(FirstActivity.this, MyReactActivity.class);
-                //启动
-                startActivity(intent);
+            // 给bnt1添加点击响应事件
+            Intent intent = new Intent(FirstActivity.this, MyReactActivity.class);
+            //启动
+            startActivity(intent);
             }
         });
     }

@@ -69,11 +69,19 @@ class Home extends React.Component {
     const { state } = this.props.navigation
     const type = getPostType(state.routeName)
     this.setState({
-      topics: ds
+      topics: ds,
+      loading: true
     })
     this.fetchData({
       tab: type,
       page: this.state.page
+    })
+    .then((res) => {
+      if (res === 'success') {
+        this.setState({
+          loading: false
+        })
+      }
     })
   }
   _renderRow(rowData) {
