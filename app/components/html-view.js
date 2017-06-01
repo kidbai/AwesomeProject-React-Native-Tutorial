@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Dimensions, Image, View, StyleSheet, Text, Linking } from 'react-native'
 import RNHtmlView from 'react-native-htmlview'
+import { parseImgUrl } from '../utils'
 
 const screenWidth = Dimensions.get("window").width
 
@@ -25,9 +26,9 @@ const styles = StyleSheet.create({
     fontSize: fontSize
   },
   image: {
-    width: screenWidth,
-    height: screenWidth,
-    resizeMode: Image.resizeMode.contain,
+    width: screenWidth - 20,
+    height: screenWidth - 20,
+    resizeMode: Image.resizeMode.center
   },
   ul: {
     padding: 0,
@@ -104,6 +105,22 @@ class HtmlView extends React.Component {
     }).catch(err => console.log(err))
   }
 
+  _onImageLoadEnd(url, index) {
+    console.log('onload')
+    Image.getSize(uri, (w, h) => {
+      console.log(screenWidth)
+      if (w >= screenWidth) {
+        w = screenWidth
+        h = (screenWidth / w) * h
+      }
+      console.log('getsize')
+      // style.image.width = w
+      // style.image.height = h
+      // console.log(style.image.width)
+      // console.log(style.image.heigth)
+    }, err => {})
+  }
+
   _renderNode(node, index) {
     if (node.name == 'iframe') {
       return (
@@ -114,9 +131,10 @@ class HtmlView extends React.Component {
     }
     if (node.name === 'img') {
       const uri = node.attribs.src
-      console.log(uri)
+      console.log(screenWidth)
       return (
-        <Image source={{uri: uri}} style={styles.image} key={'img_'+index} />
+        <Image source={{uri: parseImgUrl(uri)}} style={styles.image} key={'img_'+index} resizeMode="center"
+        onLoadEnd={()=>this._onImageLoadEnd(uri,index)} />
       )
     }
   }

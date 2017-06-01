@@ -8,7 +8,9 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  ActivityIndicator,
+  Dimensions
 } from 'react-native'
 
 import { getCnodeTopic } from '../api'
@@ -23,28 +25,45 @@ class Topic extends React.Component {
     super(props)
 
     this.state = {
-      topic: {}
+      topic: {},
+      loading: true
     }
   }
   fetchData() {
     const { params } = this.props.navigation.state
-    getCnodeTopic(params.id)
+    return getCnodeTopic(params.id)
       .then((res) => res.json())
       .then((res) => {
         this.setState({
           topic: res.data
         })
+        return 'success'
       })
       .catch((e) => {
-        console.error(e)
       })
   }
   componentWillMount() {
+    this.setState({
+      loading: true
+    })
     this.fetchData()
+    .then((res) => {
+      if (res === 'success') {
+        this.setState({
+          loading: false
+        })
+      }
+    })
   }
   render() {
     return (
       <ScrollView style={ markDownStyle.markDown }>
+        <ActivityIndicator
+          animating={this.state.loading}
+          color='#80bd01'
+          size='large'
+          style={{position: 'absolute', width: 100, height:100, top: 150, left: (Dimensions.get('window').width / 2) - 50 }}
+        />
         <HTMLView value={ this.state.topic.content || '' } />
       </ScrollView>
     );

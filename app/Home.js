@@ -58,7 +58,6 @@ class Home extends React.Component {
           topicsArr: topicsArr,
           topics: ds.cloneWithRows(topicsArr)
         })
-
         return 'success'
       })
       .catch((e) => {
@@ -69,11 +68,19 @@ class Home extends React.Component {
     const { state } = this.props.navigation
     const type = getPostType(state.routeName)
     this.setState({
-      topics: ds
+      topics: ds,
+      loading: true
     })
     this.fetchData({
       tab: type,
       page: this.state.page
+    })
+    .then((res) => {
+      if (res === 'success') {
+        this.setState({
+          loading: false
+        })
+      }
     })
   }
   _renderRow(rowData) {
@@ -145,7 +152,7 @@ class Home extends React.Component {
       <View>
         <ActivityIndicator
           animating={this.state.loading}
-          color='#000'
+          color='#80bd01'
           size='large'
           style={{position: 'absolute', width: 100, height:100, top: 150, left: (Dimensions.get('window').width / 2) - 50, zIndex: 2}}
         />
