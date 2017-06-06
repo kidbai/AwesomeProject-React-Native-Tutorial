@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
  * Created by Youngbye on 2017/5/31.
  */
 
-public class FirstActivity extends Activity {
+public class SlActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +25,7 @@ public class FirstActivity extends Activity {
             @Override
             public void onClick(View v) {
             // 给bnt1添加点击响应事件
-            Intent intent = new Intent(FirstActivity.this, MyReactActivity.class);
+            Intent intent = new Intent(SlActivity.this, MyReactActivity.class);
             //启动
             startActivity(intent);
             }
