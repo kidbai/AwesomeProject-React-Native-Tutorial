@@ -7,196 +7,119 @@ import React, {
 import {
   AppRegistry,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-  Dimensions
+  Image,
+  Text,
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 
-import Video from 'react-native-video';
-
-class VideoPlayer extends Component {
-
-  state = {
-    rate: 1,
-    volume: 1,
-    muted: false,
-    resizeMode: 'contain',
-    duration: 0.0,
-    currentTime: 0.0,
-    paused: true,
-  };
-
-  video: Video;
-
-  onLoad = (data) => {
-    this.setState({ duration: data.duration });
-  };
-
-  onProgress = (data) => {
-    this.setState({ currentTime: data.currentTime });
-  };
-
-  onEnd = () => {
-    this.setState({ paused: true })
-    this.video.seek(0)
-  };
-
-  onAudioBecomingNoisy = () => {
-    this.setState({ paused: true })
-  };
-
-  onAudioFocusChanged = (event: { hasAudioFocus: boolean }) => {
-    this.setState({ paused: !event.hasAudioFocus })
-  };
-
-  getCurrentTimePercentage() {
-    if (this.state.currentTime > 0) {
-      return parseFloat(this.state.currentTime) / parseFloat(this.state.duration);
-    }
-    return 0;
-  };
-
-  renderRateControl(rate) {
-    const isSelected = (this.state.rate === rate);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({ rate }) }}>
-        <Text style={[styles.controlOption, { fontWeight: isSelected ? 'bold' : 'normal' }]}>
-          {rate}x
-        </Text>
-      </TouchableOpacity>
-    );
+class Video extends Component {
+  _onPress () {
+    console.log('button click')
   }
-
-  renderResizeModeControl(resizeMode) {
-    const isSelected = (this.state.resizeMode === resizeMode);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({ resizeMode }) }}>
-        <Text style={[styles.controlOption, { fontWeight: isSelected ? 'bold' : 'normal' }]}>
-          {resizeMode}
-        </Text>
-      </TouchableOpacity>
-    )
-  }
-
-  renderVolumeControl(volume) {
-    const isSelected = (this.state.volume === volume);
-
-    return (
-      <TouchableOpacity onPress={() => { this.setState({ volume }) }}>
-        <Text style={[styles.controlOption, { fontWeight: isSelected ? 'bold' : 'normal' }]}>
-          {volume * 100}%
-        </Text>
-      </TouchableOpacity>
-    )
-  }
-
   render() {
-    const flexCompleted = this.getCurrentTimePercentage() * 100;
-    const flexRemaining = (1 - this.getCurrentTimePercentage()) * 100;
-
+    console.log('hello world')
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.fullScreen}
-          onPress={() => this.setState({ paused: !this.state.paused })}
-        >
-          <Video
-            ref={(ref: Video) => { this.video = ref }}
-            /* For ExoPlayer */
-            /* source={{ uri: 'http://www.youtube.com/api/manifest/dash/id/bf5bb2419360daf1/source/youtube?as=fmp4_audio_clear,fmp4_sd_hd_clear&sparams=ip,ipbits,expire,source,id,as&ip=0.0.0.0&ipbits=0&expire=19000000000&signature=51AF5F39AB0CEC3E5497CD9C900EBFEAECCCB5C7.8506521BFC350652163895D4C26DEE124209AA9E&key=ik0', type: 'mpd' }} */
-            source={{ uri: 'http://video.kcloud.n0808.com/6855e2cc453d949c68b2c3c1b4b729a035ace8d1?sign=3d4666e3d35fde14634e5cbc3eaf1f05&t=593810ce&hash=0846cbc02f55e396caf66af779a8b3b9&ts=1496846542'}}
-            style={styles.fullScreen}
-            rate={this.state.rate}
-            paused={this.state.paused}
-            volume={this.state.volume}
-            muted={this.state.muted}
-            resizeMode={this.state.resizeMode}
-            onLoad={this.onLoad}
-            onProgress={this.onProgress}
-            onEnd={this.onEnd}
-            onAudioBecomingNoisy={this.onAudioBecomingNoisy}
-            onAudioFocusChanged={this.onAudioFocusChanged}
-            repeat={false}
-          />
-        </TouchableOpacity>
-
+      <View style={Style.navContainer}>
+        <View style={Style.navLeft}>
+          <View style={Style.navItem}>
+            <Image
+              style={Style.back}
+              source={require('../assets/img/back.png')}
+            />
+          </View>
+          <View style={Style.navItem}>
+            <Image
+              style={Style.cat}
+              source={require('../assets/img/cat.jpeg')}
+            />
+          </View>
+          <View style={Style.userName}>
+            <Text style={Style.text}>Youngbye</Text>
+          </View>
+        </View>
+        <View style={Style.navRight}>
+          <View style={Style.follow}>
+            <Text style={Style.followText}>+ 关注</Text>
+          </View>
+          <View>
+            <Image
+              style={Style.menu}
+              source={require('../assets/img/menu.png')}
+            />
+          </View>
+        </View>
       </View>
-    );
+    )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
+const Style = StyleSheet.create({
+  navContainer: {
+    width: Dimensions.get('window').width,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  navLeft: {
     flex: 1,
-    justifyContent: 'center',
+    width: 100,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#000',
+    padding: 12
   },
-  fullScreen: {
-    position: 'relative',
-    // top: 0,
-    // left: 0,
-    // bottom: 0,
-    // right: 0,
-    width: 300,
-    height: 200
-  },
-  controls: {
-    backgroundColor: 'transparent',
-    borderRadius: 5,
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-  },
-  progress: {
+  navRight: {
     flex: 1,
+    width: 50,
+    height: 50,
+    backgroundColor: '#fff',
     flexDirection: 'row',
-    borderRadius: 3,
-    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 12
   },
-  innerProgressCompleted: {
-    height: 20,
-    backgroundColor: '#cccccc',
+  navItem: {
+    marginRight: 10
   },
-  innerProgressRemaining: {
-    height: 20,
-    backgroundColor: '#2C2C2C',
+  back: {
+    width: 22,
+    height: 22,
+    marginLeft: 3,
+    marginRight: 3,
+    backgroundColor: '#fff'
   },
-  generalControls: {
+  cat: {
     flex: 1,
-    flexDirection: 'row',
+    width: 26,
+    height: 26,
+    borderRadius: 50,
+  },
+  textBlack: {
+    color: '#000'
+  },
+  follow: {
+    width: 60,
+    height: 26,
     borderRadius: 4,
-    overflow: 'hidden',
-    paddingBottom: 10,
-  },
-  rateControl: {
-    flex: 1,
+    borderWidth: 1,
+    // backgroundColor: '#000',
+    borderColor: '#0392d8',
     flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems:'center',
+    justifyContent: 'center'
   },
-  volumeControl: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
+  followText: {
+    color: '#0392d8'
   },
-  resizeModeControl: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  controlOption: {
-    alignSelf: 'center',
-    fontSize: 11,
-    color: 'white',
-    paddingLeft: 2,
-    paddingRight: 2,
-    lineHeight: 12,
-  },
-});
+  menu: {
+    width: 20,
+    height: 20,
+    marginLeft: 15,
+    marginRight: 3
+  }
+})
 
-export default VideoPlayer
+export default Video
