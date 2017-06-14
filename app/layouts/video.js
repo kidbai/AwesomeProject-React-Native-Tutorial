@@ -24,6 +24,17 @@ class Video extends Component {
   _onPress () {
     console.log('button click')
   }
+
+  componentDidMount() {
+    console.log(NativeModules)
+    NativeModules.IntentModule.dataToJS((msg) => {
+      console.log(msg);
+    },
+      (result) => {
+        console.log(result)
+    })
+  }
+
   render() {
     return (
       <View style={Style.container}>

@@ -25,8 +25,8 @@ public class SlActivity extends Activity {
             @Override
             public void onClick(View v) {
             // 给bnt1添加点击响应事件
-            Intent intent = new Intent(SlActivity.this, MyReactActivity.class);
-            
+            Intent intent = new Intent(SlActivity.this, MainActivity.class);
+            intent.putExtra("data","传入JS中的数据...123");
             //启动
             startActivity(intent);
             }
