@@ -1,10 +1,9 @@
-# AwesomeProject-React-Native-Tutorial
+# Notes
 
-添加嵌入Android原生应用的功能
-
-Cnode React-Native App
-
-[Cnode Api](https://cnodejs.org/api)
+- 实现嵌入Android原生应用的功能
+- 使用第三方react-native-video视频处理模块
+- flex布局
+- Android端添加native模块并注入RN，实现Android和RN的简单通信交互
 
 # Install
 
@@ -14,10 +13,10 @@ Cnode React-Native App
 
   - ``` npm run start ```
 
-  - run AwesomeProject.xcodeproj on Xcode
+  - run pro in Android Studio
 
   - open simulator
 
-# Screenshots
+  - 真机调试需要adb，并且需要设置和packager一样的端口
+  - - adb reverser tcp:8081 tcp:8081
 
-![screenshot](https://github.com/kidbai/AwesomeProject-React-Native-Tutorial/raw/master/img/cnode.gif)
