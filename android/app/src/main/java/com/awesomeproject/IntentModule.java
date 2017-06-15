@@ -39,48 +39,5 @@ public class IntentModule  extends ReactContextBaseJavaModule {
             errorBack.invoke(e.getMessage());
         }
     }
-    /**
-     * 从JS页面跳转到原生activity   同时也可以从JS传递相关数据到原生
-     * @param name
-     * @param params
-     */
-    @ReactMethod
-    public void startActivityFromJS(String name, String params){
-        try{
-            Activity currentActivity = getCurrentActivity();
-            if(null!=currentActivity){
-                Class toActivity = Class.forName(name);
-                Intent intent = new Intent(currentActivity,toActivity);
-                intent.putExtra("params", params);
-                currentActivity.startActivity(intent);
-            }
-        }catch(Exception e){
-            throw new JSApplicationIllegalArgumentException(
-                    "不能打开Activity : "+e.getMessage());
-        }
-    }
 
-    /**
-     * 从JS页面跳转到Activity界面，并且等待从Activity返回的数据给JS
-     * @param className
-     * @param successBack
-     * @param errorBack
-     */
-    @ReactMethod
-    public void startActivityFromJSGetResult(String className,int requestCode,Callback successBack, Callback errorBack){
-            try {
-                Activity currentActivity=getCurrentActivity();
-                if(currentActivity!=null) {
-                    Class toActivity = Class.forName(className);
-                    Intent intent = new Intent(currentActivity,toActivity);
-                    currentActivity.startActivityForResult(intent,requestCode);
-                    //进行回调数据
-                    successBack.invoke(MainActivity.mQueue.take());
-                }
-            } catch (Exception e) {
-                errorBack.invoke(e.getMessage());
-                e.printStackTrace();
-            }
-
-    }
 }

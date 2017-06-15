@@ -21,14 +21,25 @@ const Width = Dimensions.get('window').width
 const Height = Dimensions.get('window').height
 
 class Video extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      videoLink: ''
+    }
+  }
+
   _onPress () {
     console.log('button click')
   }
 
   componentDidMount() {
     console.log(NativeModules)
-    NativeModules.IntentModule.dataToJS((msg) => {
-      console.log(msg);
+    NativeModules.IntentModule.dataToJS((videoLink) => {
+      console.log(videoLink);
+      this.setState({
+        videoLink: videoLink
+      })
     },
       (result) => {
         console.log(result)
@@ -69,44 +80,48 @@ class Video extends Component {
           </View>
         </View>
         <ScrollView>
-          <View style={Style.video}>
-            <VideoPlayer></VideoPlayer>
-          </View>
-          <View style={Style.titleContainer}>
-            <Text style={Style.title}>这波操作太6了，这是一个能成为王者的超级兵</Text>
-          </View>
-          <View style={Style.actionContainer}>
-            <View style={Style.acitionLeft}>
-              <Image
-                style={Style.like}
-                source={require('../assets/img/like.png')}
-              />
+          <View Style={Style.section}>
+            <View style={Style.video}>
+              <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
             </View>
-            <View style={Style.acitionRight}>
-              <Image
-                style={Style.likeUser}
-                source={require('../assets/img/like.png')}
-              />
-              <Image
-                style={Style.likeUser}
-                source={require('../assets/img/like.png')}
-              />
-              <Image
-                style={Style.likeUser}
-                source={require('../assets/img/like.png')}
-              />
-              <Text>18万赞</Text>
+            <View style={Style.titleContainer}>
+              <Text style={Style.title}>这波操作太6了，这是一个能成为王者的超级兵</Text>
+            </View>
+            <View style={Style.actionContainer}>
+              <View style={Style.acitionLeft}>
+                <Image
+                  style={Style.like}
+                  source={require('../assets/img/like.png')}
+                />
+              </View>
+              <View style={Style.acitionRight}>
+                <Image
+                  style={Style.likeUser}
+                  source={require('../assets/img/head.png')}
+                />
+                <Image
+                  style={Style.likeUser}
+                  source={require('../assets/img/head.png')}
+                />
+                <Image
+                  style={Style.likeUser}
+                  source={require('../assets/img/head.png')}
+                />
+                <Text Style={Style.praisedNum}>18万赞</Text>
+              </View>
             </View>
           </View>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
-          <Text>18万赞</Text>
+          <View>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+            <Text>123</Text>
+          </View>
         </ScrollView>
       </View>
     )
@@ -166,7 +181,7 @@ const Style = StyleSheet.create({
     width: 60,
     height: 26,
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: .6,
     borderColor: '#0392d8',
     flexDirection: 'row',
     alignItems:'center',
@@ -205,7 +220,8 @@ const Style = StyleSheet.create({
   acitionRight: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'flex-end',
+    paddingRight: 10
   },
   like: {
     width: 20,
@@ -214,9 +230,18 @@ const Style = StyleSheet.create({
   likeUser: {
     width: 20,
     height: 20,
+    marginRight: 5,
     borderRadius: 50,
     borderWidth: 0.5,
     borderColor: '#000'
+  },
+  praisedNum: {
+  },
+  section: {
+    backgroundColor: '#fff',
+    borderWidth: 5,
+    borderBottomWidth: 5,
+    borderBottomColor: '#f2f2f2'
   }
 })
 

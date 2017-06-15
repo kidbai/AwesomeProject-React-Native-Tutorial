@@ -12,14 +12,17 @@ import {
 
 import Video from 'react-native-video'
 
+const windowWdith = Dimensions.get('window').width
+const defaultHeight = windowWdith
+
 class VideoPlayer extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       style: {
-        width: Dimensions.get('window').width,
-        height: 0
+        width: windowWdith,
+        height: defaultHeight
       },
       video: Video
     }
@@ -30,7 +33,7 @@ class VideoPlayer extends Component {
     const newHeight = (this.state.style.width * data.naturalSize.height) / data.naturalSize.width
     this.setState({
       style: {
-        width: Dimensions.get('window').width,
+        width: windowWdith,
         height: newHeight
       }
     })
@@ -43,10 +46,9 @@ class VideoPlayer extends Component {
     // setTimeout(() => {
     //   console.log(this.player)
     // }, 2000)
-    console.log('render')
     return (
       <Video
-       source={{uri:'http://video.kcloud.n0808.com/5a4baf2482160f0808c4c393f921371efe4bdad0?sign=bef8c3d1079417a5054f41444c4307c2&t=59417e68&hash=774df192abfe5a01cef0d06c56f93152&ts=1497464424'}}   // Can be a URL or a local file.
+       source={{uri: this.props.videoLink}}   // Can be a URL or a local file.
        ref={(ref) => {
          this.player = ref
        }}                                      // Store reference

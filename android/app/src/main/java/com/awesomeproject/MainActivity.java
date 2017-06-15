@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class MainActivity extends ReactActivity {
-    //构建一个阻塞的单一数据的队列
-    public static ArrayBlockingQueue<String> mQueue = new ArrayBlockingQueue<String>(1);
+
     /**
      * Returns the name of the main component registered from JavaScript.
      * This is used to schedule rendering of the component.
@@ -21,27 +20,6 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "AwesomeProject";
-    }
-
-    /**
-     * Returns whether dev mode should be enabled.
-     * This enables e.g. the dev menu.
-     */
-
-    protected boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
-    }
-
-    /**
-     * A list of packages used by the app. If the app uses additional views
-     * or modules besides the default ones, add more packages here.
-     */
-
-    protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-                new IntentReactPackage()
-        );
     }
 
 //    /**
