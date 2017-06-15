@@ -40,4 +40,26 @@ public class IntentModule  extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * 从JS页面跳转到原生activity   同时也可以从JS传递相关数据到原生
+     * @param name
+     * @param params
+     */
+    @ReactMethod
+    public void startActivityFromJS(String name, String params){
+        try{
+            Activity currentActivity = getCurrentActivity();
+            if(null!=currentActivity){
+//                Class toActivity = Class.forName(name);
+//                Intent intent = new Intent(currentActivity,toActivity);
+//                intent.putExtra("params", params);
+//                currentActivity.startActivity(intent);
+                currentActivity.finish();
+            }
+        }catch(Exception e){
+            throw new JSApplicationIllegalArgumentException(
+                    "不能打开Activity : "+e.getMessage());
+        }
+    }
+
 }

@@ -25,18 +25,32 @@ class Video extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      videoLink: ''
+      videoLink: '',
+      follow: {
+        stat: false,
+        text: '+ 关注'
+      }
     }
   }
 
-  _onPress () {
-    console.log('button click')
+  _followOnPress () {
+    if (this.state.follow.stat === false) {
+      this.setState({
+       follow: {
+         stat: true,
+         text: '已关注'
+       }
+      })
+    }
+  }
+
+  _backward () {
+    NativeModules.IntentModule.startActivityFromJS('com.awesomeproject.SlActivity', 'back')
   }
 
   componentDidMount() {
     console.log(NativeModules)
     NativeModules.IntentModule.dataToJS((videoLink) => {
-      console.log(videoLink);
       this.setState({
         videoLink: videoLink
       })
@@ -52,10 +66,13 @@ class Video extends Component {
         <View style={Style.navContainer}>
           <View style={Style.navLeft}>
             <View style={Style.navItem}>
-              <Image
-                style={Style.back}
-                source={require('../assets/img/back.png')}
-              />
+              <TouchableOpacity
+                onPress={this._backward.bind(this)}>
+                <Image
+                  style={Style.back}
+                  source={require('../assets/img/back.png')}
+                />
+              </TouchableOpacity>
             </View>
             <View style={Style.navItem}>
               <Image
@@ -69,7 +86,11 @@ class Video extends Component {
           </View>
           <View style={Style.navRight}>
             <View style={Style.follow}>
-              <Text style={Style.followText}>+ 关注</Text>
+              <TouchableOpacity
+                onPress={this._followOnPress.bind(this)}
+                >
+                <Text style={Style.followText}>{this.state.follow.text}</Text>
+              </TouchableOpacity>
             </View>
             <View>
               <Image
@@ -80,7 +101,7 @@ class Video extends Component {
           </View>
         </View>
         <ScrollView>
-          <View Style={Style.section}>
+          <View>
             <View style={Style.video}>
               <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
             </View>
@@ -131,7 +152,8 @@ class Video extends Component {
 const Style = StyleSheet.create({
   container: {
     width: Width,
-    height: Height
+    height: Height,
+    backgroundColor: '#fff'
   },
   navContainer: {
     width: Width,
@@ -208,11 +230,16 @@ const Style = StyleSheet.create({
     color: '#000'
   },
   actionContainer: {
+    paddingTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 10,
+    paddingBottom: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderStyle: 'solid',
+    borderBottomWidth: 10,
+    borderBottomColor: '#f2f2f2'
   },
   acitionLeft: {
     flex: 1
@@ -235,14 +262,6 @@ const Style = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#000'
   },
-  praisedNum: {
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderWidth: 5,
-    borderBottomWidth: 5,
-    borderBottomColor: '#f2f2f2'
-  }
 })
 
 export default Video
