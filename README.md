@@ -1,4 +1,8 @@
-# Notes
+# Attention
+
+- default分支我切为了feature功能，cnode的demo暂时不处理，需要的同学的切到master即可
+
+# Description
 
 - 实现嵌入Android原生应用的功能
 - 使用第三方react-native-video视频处理模块
@@ -8,6 +12,12 @@
 # Install
 
   ```git clone https://github.com/kidbai/AwesomeProject-React-Native-Tutorial.git```
+
+  and
+
+  ``` cd prjName ```
+
+  ``` npm i ```
 
 # Usage
 
