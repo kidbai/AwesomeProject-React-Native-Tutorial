@@ -12,7 +12,10 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  NativeModules
+  NativeModules,
+  Animated,
+  Easing,
+  ListView
 } from 'react-native'
 
 import VideoPlayer from '../components/VideoPlayer'
@@ -24,13 +27,28 @@ class Video extends Component {
 
   constructor(props) {
     super(props)
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
       videoLink: '',
       follow: {
         stat: false,
-        text: '+ 关注'
-      }
+        text: '+ 关注',
+        recommandListData: ds
+      },
+      spin: new Animated.Value(0)
     }
+  }
+
+  animate () {
+    this.state.spin.setValue(0)
+    Animated.timing(
+      this.state.spin,
+      {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear
+      }
+    ).start(() => this.animate())
   }
 
   _followOnPress () {
@@ -49,7 +67,7 @@ class Video extends Component {
   }
 
   componentDidMount() {
-    console.log(NativeModules)
+    this.animate()
     NativeModules.IntentModule.dataToJS((videoLink) => {
       this.setState({
         videoLink: videoLink
@@ -60,7 +78,15 @@ class Video extends Component {
     })
   }
 
+  showAll () {
+    console.log('show all')
+  }
+
   render() {
+    // const spin = this.state.spin.interpolate({
+    //   inputRange: [0, 1],
+    //   outputRange: ['0deg', '360deg']
+    // })
     return (
       <View style={Style.container}>
         <View style={Style.navContainer}>
@@ -101,10 +127,10 @@ class Video extends Component {
           </View>
         </View>
         <ScrollView>
+          <View style={Style.video}>
+            <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
+          </View>
           <View>
-            <View style={Style.video}>
-              <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
-            </View>
             <View style={Style.titleContainer}>
               <Text style={Style.title}>这波操作太6了，这是一个能成为王者的超级兵</Text>
             </View>
@@ -128,20 +154,57 @@ class Video extends Component {
                   style={Style.likeUser}
                   source={require('../assets/img/head.png')}
                 />
-                <Text Style={Style.praisedNum}>18万赞</Text>
+                <Text style={Style.praisedNum}>18万赞</Text>
               </View>
             </View>
-          </View>
-          <View>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
-            <Text>123</Text>
+            <View style={Style.recommandWrapper}>
+              <Text style={Style.recommandTitle}>相关推荐</Text>
+              <View style={Style.recommandList}>
+                <View style={Style.recommandItem}>
+                  <Image
+                    style={Style.recommandImage}
+                    source={require('../assets/img/flower.jpeg')}
+                  />
+                  <View style={Style.recommandText}>
+                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
+                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
+                  </View>
+                </View>
+                <View style={Style.recommandItem}>
+                  <Image
+                    style={Style.recommandImage}
+                    source={require('../assets/img/flower.jpeg')}
+                  />
+                  <View style={Style.recommandText}>
+                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法</Text>
+                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
+                  </View>
+                </View>
+                <View style={Style.recommandItem}>
+                  <Image
+                    style={Style.recommandImage}
+                    source={require('../assets/img/flower.jpeg')}
+                  />
+                  <View style={Style.recommandText}>
+                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
+                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
+                  </View>
+                </View>
+                <View style={Style.recommandItem}>
+                  <Image
+                    style={Style.recommandImage}
+                    source={require('../assets/img/flower.jpeg')}
+                  />
+                  <View style={Style.recommandText}>
+                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
+                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={Style.recommandAll}>
+                <Text style={Style.recommandAllText} onPress={this.showAll}>全部</Text>
+              </View>
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -223,7 +286,8 @@ const Style = StyleSheet.create({
     backgroundColor: '#000'
   },
   titleContainer: {
-    padding: 10
+    padding: 10,
+    zIndex: 1
   },
   title: {
     fontSize: 17,
@@ -239,7 +303,8 @@ const Style = StyleSheet.create({
     backgroundColor: '#fff',
     borderStyle: 'solid',
     borderBottomWidth: 10,
-    borderBottomColor: '#f2f2f2'
+    borderBottomColor: '#f2f2f2',
+    zIndex: 1
   },
   acitionLeft: {
     flex: 1
@@ -262,6 +327,80 @@ const Style = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#000'
   },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    width: Width,
+    height: 200,
+    zIndex: 2,
+    opacity: 1
+  },
+  loading: {
+    width: 50,
+    resizeMode: 'contain',
+    position: 'absolute',
+    top: 0,
+    left: (Width / 2) - 25
+  },
+  recommandWrapper: {
+    position: 'relative',
+    backgroundColor: '#fff',
+    zIndex: 1,
+    borderStyle: 'solid',
+    borderBottomWidth: 10,
+    borderBottomColor: '#f2f2f2',
+    marginBottom: 40
+  },
+  recommandTitle: {
+    position: 'relative',
+    fontSize: 15,
+    margin: 15,
+    fontWeight: 'bold',
+    color: '#333'
+  },
+  recommandList: {
+    position: 'relative',
+    marginRight: 15,
+    marginLeft: 15
+  },
+  recommandItem: {
+    height: 80,
+    flexDirection: 'row'
+  },
+  recommandImage: {
+    width: 120,
+    height: 67.5,
+    marginRight: 15
+  },
+  recommandText: {
+    paddingTop: 2,
+    paddingBottom: 2,
+    width: Width - 165,
+    height: 67.5,
+    flexDirection: 'column'
+  },
+  recommandItemTitle: {
+    fontSize: 15,
+    color: '#333'
+  },
+  recommandItemInfo: {
+    marginTop: 10,
+    fontSize: 10,
+    color: '#666'
+  },
+  recommandAll: {
+    width: Width,
+    height: 40,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  recommandAllText: {
+    width: Width,
+    fontSize: 14,
+    textAlign: 'center'
+  }
 })
 
 export default Video
