@@ -23,19 +23,37 @@ import VideoPlayer from '../components/VideoPlayer'
 const Width = Dimensions.get('window').width
 const Height = Dimensions.get('window').height
 
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 class Video extends Component {
 
   constructor(props) {
     super(props)
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
       videoLink: '',
       follow: {
         stat: false,
         text: '+ 关注',
-        recommandListData: ds
       },
-      spin: new Animated.Value(0)
+      defaultArr: [
+        {
+          title: '666',
+          playTime: '1000'
+        },
+        {
+          title: '888',
+          playTime: '1000'
+        },
+        {
+          title: '900',
+          playTime: '1000'
+        },
+        {
+          title: '878',
+          playTime: '1000'
+        }
+      ],
+      spin: new Animated.Value(0),
+      recommandListData: ds
     }
   }
 
@@ -66,6 +84,21 @@ class Video extends Component {
     NativeModules.IntentModule.startActivityFromJS('com.awesomeproject.SlActivity', 'back')
   }
 
+  _renderRow (rowData) {
+    return (
+      <View style={Style.recommandItem}>
+        <Image
+          style={Style.recommandImage}
+          source={require('../assets/img/flower.jpeg')}
+        />
+        <View style={Style.recommandText}>
+          <Text style={Style.recommandItemTitle}>{rowData.title}</Text>
+          <Text style={Style.recommandItemInfo}>啦啦啦啦   {rowData.playTime}万次观看</Text>
+        </View>
+      </View>
+    )
+  }
+
   componentDidMount() {
     this.animate()
     NativeModules.IntentModule.dataToJS((videoLink) => {
@@ -76,10 +109,25 @@ class Video extends Component {
       (result) => {
         console.log(result)
     })
+    this.setState({
+      recommandListData: ds.cloneWithRows(this.state.defaultArr)
+    })
   }
 
-  showAll () {
+  _showAll () {
     console.log('show all')
+    const randNum = (Math.random() * 1000).toFixed(0)
+    const newData = [{
+      title: (Math.random() * 1000).toFixed(0),
+      playTime: (Math.random() * 1000).toFixed(0)
+    },{
+      title: (Math.random() * 1000).toFixed(0),
+      playTime: (Math.random() * 1000).toFixed(0)
+    }]
+    this.state.defaultArr = this.state.defaultArr.concat(newData)
+    this.setState({
+      recommandListData: ds.cloneWithRows(this.state.defaultArr)
+    })
   }
 
   render() {
@@ -159,50 +207,13 @@ class Video extends Component {
             </View>
             <View style={Style.recommandWrapper}>
               <Text style={Style.recommandTitle}>相关推荐</Text>
-              <View style={Style.recommandList}>
-                <View style={Style.recommandItem}>
-                  <Image
-                    style={Style.recommandImage}
-                    source={require('../assets/img/flower.jpeg')}
-                  />
-                  <View style={Style.recommandText}>
-                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
-                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
-                  </View>
-                </View>
-                <View style={Style.recommandItem}>
-                  <Image
-                    style={Style.recommandImage}
-                    source={require('../assets/img/flower.jpeg')}
-                  />
-                  <View style={Style.recommandText}>
-                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法</Text>
-                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
-                  </View>
-                </View>
-                <View style={Style.recommandItem}>
-                  <Image
-                    style={Style.recommandImage}
-                    source={require('../assets/img/flower.jpeg')}
-                  />
-                  <View style={Style.recommandText}>
-                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
-                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
-                  </View>
-                </View>
-                <View style={Style.recommandItem}>
-                  <Image
-                    style={Style.recommandImage}
-                    source={require('../assets/img/flower.jpeg')}
-                  />
-                  <View style={Style.recommandText}>
-                    <Text style={Style.recommandItemTitle}>魔术揭秘：看发牢法撒旦骚扥就开赛</Text>
-                    <Text style={Style.recommandItemInfo}>啦啦啦啦   17万次观看</Text>
-                  </View>
-                </View>
-              </View>
+              <ListView
+                style={Style.recommandList}
+                dataSource={this.state.recommandListData}
+                renderRow={(rowData) => this._renderRow(rowData)}
+              />
               <View style={Style.recommandAll}>
-                <Text style={Style.recommandAllText} onPress={this.showAll}>全部</Text>
+                <Text style={Style.recommandAllText} onPress={this._showAll.bind(this)}>全部</Text>
               </View>
             </View>
           </View>
