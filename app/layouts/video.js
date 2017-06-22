@@ -11,6 +11,7 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ScrollView,
   NativeModules,
   Animated,
@@ -52,6 +53,8 @@ class Video extends Component {
         }
       ],
       spin: new Animated.Value(0),
+      like: new Animated.Value(0),
+      likeImg: require('../assets/img/like.png'),
       recommandListData: ds
     }
   }
@@ -66,6 +69,27 @@ class Video extends Component {
         easing: Easing.linear
       }
     ).start(() => this.animate())
+  }
+
+  likeAnimate () {
+    this.state.like.setValue(0)
+    Animated.timing(
+      this.state.like,
+      {
+        toValue: 1,
+        duration: 500,
+        easing: Easing.linear
+      }
+    ).start(()=> this.likeAnimate())
+
+  }
+
+  _like () {
+    this.setState({
+      likeImg: require('../assets/img/like_on.png')
+    }, ()=> {
+      this.likeAnimate()
+    })
   }
 
   _followOnPress () {
@@ -184,10 +208,17 @@ class Video extends Component {
             </View>
             <View style={Style.actionContainer}>
               <View style={Style.acitionLeft}>
-                <Image
-                  style={Style.like}
-                  source={require('../assets/img/like.png')}
-                />
+                <TouchableWithoutFeedback onPress={this._like.bind(this)}>
+                  <Animated.Image
+                    style={[Style.like, {transform: [{
+                      scale: this.state.like.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.3]
+                      })
+                    }]}]}
+                    source={this.state.likeImg}
+                  />
+                </TouchableWithoutFeedback>
               </View>
               <View style={Style.acitionRight}>
                 <Image
@@ -275,8 +306,8 @@ const Style = StyleSheet.create({
   },
   cat: {
     flex: 1,
-    width: 26,
-    height: 26,
+    width: 22,
+    height: 22,
     borderRadius: 50,
   },
   username: {
@@ -284,8 +315,8 @@ const Style = StyleSheet.create({
   },
   follow: {
     width: 60,
-    height: 26,
-    borderRadius: 4,
+    height: 22,
+    borderRadius: 2,
     borderWidth: .6,
     borderColor: '#0392d8',
     flexDirection: 'row',
@@ -314,7 +345,7 @@ const Style = StyleSheet.create({
     color: '#000'
   },
   actionContainer: {
-    marginTop: 5,
+    paddingTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 10,
@@ -325,7 +356,7 @@ const Style = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomWidth: 10,
     borderColor: '#f2f2f2',
-    zIndex: 1
+    zIndex: 2
   },
   acitionLeft: {
     flex: 1
