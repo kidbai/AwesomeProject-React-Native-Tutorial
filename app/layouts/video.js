@@ -20,8 +20,7 @@ import {
 
 import VideoPlayer from '../components/VideoPlayer'
 
-const Width = Dimensions.get('window').width
-const Height = Dimensions.get('window').height
+const {width, height} = Dimensions.get('window')
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 class Video extends Component {
@@ -115,7 +114,6 @@ class Video extends Component {
   }
 
   _showAll () {
-    console.log('show all')
     const randNum = (Math.random() * 1000).toFixed(0)
     const newData = [{
       title: (Math.random() * 1000).toFixed(0),
@@ -124,17 +122,17 @@ class Video extends Component {
       title: (Math.random() * 1000).toFixed(0),
       playTime: (Math.random() * 1000).toFixed(0)
     }]
-    this.state.defaultArr = this.state.defaultArr.concat(newData)
+    const newArr = this.state.defaultArr.concat(newData)
     this.setState({
-      recommandListData: ds.cloneWithRows(this.state.defaultArr)
+      defaultArr: newArr
+    }, ()=> {
+      this.setState({
+        recommandListData: ds.cloneWithRows(this.state.defaultArr)
+      })
     })
   }
 
   render() {
-    // const spin = this.state.spin.interpolate({
-    //   inputRange: [0, 1],
-    //   outputRange: ['0deg', '360deg']
-    // })
     return (
       <View style={Style.container}>
         <View style={Style.navContainer}>
@@ -174,7 +172,9 @@ class Video extends Component {
             </View>
           </View>
         </View>
-        <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={Style.contentContainer}>
           <View style={Style.video}>
             <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
           </View>
@@ -213,11 +213,18 @@ class Video extends Component {
                 renderRow={(rowData) => this._renderRow(rowData)}
               />
               <View style={Style.recommandAll}>
-                <Text style={Style.recommandAllText} onPress={this._showAll.bind(this)}>全部</Text>
+                <TouchableOpacity
+                  onPress={this._showAll.bind(this)}
+                  >
+                  <Text style={Style.recommandAllText}>全部</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         </ScrollView>
+        <View style={Style.commentContainer}>
+          <Text style={Style.commentText}>comment here</Text>
+        </View>
       </View>
     )
   }
@@ -225,15 +232,17 @@ class Video extends Component {
 
 const Style = StyleSheet.create({
   container: {
-    width: Width,
-    height: Height,
+    flex: 1,
     backgroundColor: '#fff'
   },
   navContainer: {
-    width: Width,
+    width: width,
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  contentContainer: {
+    backgroundColor: '#fff'
   },
   navLeft: {
     flex: 1,
@@ -293,11 +302,11 @@ const Style = StyleSheet.create({
     marginRight: 3
   },
   video: {
-    width: Width,
+    width: width,
     backgroundColor: '#000'
   },
   titleContainer: {
-    padding: 10,
+    margin: 10,
     zIndex: 1
   },
   title: {
@@ -305,16 +314,17 @@ const Style = StyleSheet.create({
     color: '#000'
   },
   actionContainer: {
-    paddingTop: 5,
+    marginTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 15,
+    paddingBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: '#fff',
     borderStyle: 'solid',
     borderBottomWidth: 10,
-    borderBottomColor: '#f2f2f2',
+    borderColor: '#f2f2f2',
     zIndex: 1
   },
   acitionLeft: {
@@ -324,7 +334,7 @@ const Style = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingRight: 10
+    marginRight: 10
   },
   like: {
     width: 20,
@@ -341,7 +351,7 @@ const Style = StyleSheet.create({
   loadingContainer: {
     position: 'absolute',
     top: 0,
-    width: Width,
+    width: width,
     height: 200,
     zIndex: 2,
     opacity: 1
@@ -351,7 +361,7 @@ const Style = StyleSheet.create({
     resizeMode: 'contain',
     position: 'absolute',
     top: 0,
-    left: (Width / 2) - 25
+    left: (width / 2) - 25
   },
   recommandWrapper: {
     position: 'relative',
@@ -360,7 +370,7 @@ const Style = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomWidth: 10,
     borderBottomColor: '#f2f2f2',
-    marginBottom: 40
+    // marginBottom: 40
   },
   recommandTitle: {
     position: 'relative',
@@ -384,9 +394,7 @@ const Style = StyleSheet.create({
     marginRight: 15
   },
   recommandText: {
-    paddingTop: 2,
-    paddingBottom: 2,
-    width: Width - 165,
+    width: width - 165,
     height: 67.5,
     flexDirection: 'column'
   },
@@ -400,7 +408,7 @@ const Style = StyleSheet.create({
     color: '#666'
   },
   recommandAll: {
-    width: Width,
+    width: width,
     height: 40,
     backgroundColor: '#fff',
     flexDirection: 'row',
@@ -408,9 +416,18 @@ const Style = StyleSheet.create({
     alignItems: 'center'
   },
   recommandAllText: {
-    width: Width,
+    width: width,
     fontSize: 14,
     textAlign: 'center'
+  },
+  commentContainer: {
+    width: width,
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  commentText: {
+    width: width
   }
 })
 
