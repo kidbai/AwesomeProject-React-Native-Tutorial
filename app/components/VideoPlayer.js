@@ -37,15 +37,14 @@ class VideoPlayer extends Component {
         height: newHeight
       }
     })
+    console.log('onload')
   }
 
   onError = (res) => {
   }
 
   render() {
-    // setTimeout(() => {
-    //   console.log(this.player)
-    // }, 2000)
+    console.log('onload video')
     return (
       <Video
        source={{uri: this.props.videoLink}}   // Can be a URL or a local file.

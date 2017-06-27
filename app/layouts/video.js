@@ -20,6 +20,9 @@ import {
 } from 'react-native'
 
 import VideoPlayer from '../components/VideoPlayer'
+import uuidv4 from 'uuid/v4'
+import Navigator from '../components/Navigator.js'
+import Comment from '../components/Comment.js'
 
 const {width, height} = Dimensions.get('window')
 
@@ -30,32 +33,39 @@ class Video extends Component {
     super(props)
     this.state = {
       videoLink: '',
-      follow: {
-        stat: false,
-        text: '+ 关注',
-      },
       defaultArr: [
         {
           title: '666',
-          playTime: '1000'
+          playTime: '1000',
+          uuid: uuidv4()
         },
         {
           title: '888',
-          playTime: '1000'
+          playTime: '1000',
+          uuid: uuidv4()
         },
         {
           title: '900',
-          playTime: '1000'
+          playTime: '1000',
+          uuid: uuidv4()
         },
         {
           title: '878',
-          playTime: '1000'
+          playTime: '1000',
+          uuid: uuidv4()
         }
       ],
       spin: new Animated.Value(0),
       like: new Animated.Value(0),
       likeImg: require('../assets/img/like.png'),
-      recommandListData: ds
+      // recommandListData: ds,
+      recommandListData: [],
+      recommandAllText: {
+        width: width,
+        fontSize: 14,
+        textAlign: 'center'
+      },
+      recommandAllShow: true
     }
   }
 
@@ -81,7 +91,6 @@ class Video extends Component {
         easing: Easing.linear
       }
     ).start(()=> this.likeAnimate())
-
   }
 
   _like () {
@@ -92,24 +101,9 @@ class Video extends Component {
     })
   }
 
-  _followOnPress () {
-    if (this.state.follow.stat === false) {
-      this.setState({
-       follow: {
-         stat: true,
-         text: '已关注'
-       }
-      })
-    }
-  }
-
-  _backward () {
-    NativeModules.IntentModule.startActivityFromJS('com.awesomeproject.SlActivity', 'back')
-  }
-
   _renderRow (rowData) {
     return (
-      <View style={Style.recommandItem}>
+      <View style={Style.recommandItem} key={'_item_' + rowData.uuid}>
         <Image
           style={Style.recommandImage}
           source={require('../assets/img/flower.jpeg')}
@@ -130,72 +124,50 @@ class Video extends Component {
       })
     },
       (result) => {
-        console.log(result)
     })
+    const recommandListView = []
+    for(let i = 0;i < this.state.defaultArr.length;i++) {
+      recommandListView.push(
+        this._renderRow(this.state.defaultArr[i])
+      )
+    }
     this.setState({
-      recommandListData: ds.cloneWithRows(this.state.defaultArr)
+      recommandListData: recommandListView
+    }, ()=> {
     })
   }
 
   _showAll () {
+    this.setState({
+      recommandAllShow: false
+    })
     const randNum = (Math.random() * 1000).toFixed(0)
     const newData = [{
       title: (Math.random() * 1000).toFixed(0),
-      playTime: (Math.random() * 1000).toFixed(0)
+      playTime: (Math.random() * 1000).toFixed(0),
+      uuid: uuidv4()
     },{
       title: (Math.random() * 1000).toFixed(0),
-      playTime: (Math.random() * 1000).toFixed(0)
+      playTime: (Math.random() * 1000).toFixed(0),
+      uuid: uuidv4()
     }]
-    const newArr = this.state.defaultArr.concat(newData)
+    const appendData = []
+    for(let i = 0;i < newData.length;i++){
+      appendData.push(
+        this._renderRow(newData[i])
+      )
+    }
+    const appendRecommandListViewData = this.state.recommandListData.concat(appendData)
     this.setState({
-      defaultArr: newArr
+      recommandListData: appendRecommandListViewData
     }, ()=> {
-      this.setState({
-        recommandListData: ds.cloneWithRows(this.state.defaultArr)
-      })
     })
   }
 
   render() {
     return (
       <View style={Style.container}>
-        <View style={Style.navContainer}>
-          <View style={Style.navLeft}>
-            <View style={Style.navItem}>
-              <TouchableOpacity
-                onPress={this._backward.bind(this)}>
-                <Image
-                  style={Style.back}
-                  source={require('../assets/img/back.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={Style.navItem}>
-              <Image
-                style={Style.cat}
-                source={require('../assets/img/cat.jpeg')}
-              />
-            </View>
-            <View style={Style.navItem}>
-              <Text style={Style.username}>Youngbye</Text>
-            </View>
-          </View>
-          <View style={Style.navRight}>
-            <View style={Style.follow}>
-              <TouchableOpacity
-                onPress={this._followOnPress.bind(this)}
-                >
-                <Text style={Style.followText}>{this.state.follow.text}</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Image
-                style={Style.menu}
-                source={require('../assets/img/menu.png')}
-              />
-            </View>
-          </View>
-        </View>
+        <Navigator />
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={Style.contentContainer}>
@@ -238,24 +210,20 @@ class Video extends Component {
             </View>
             <View style={Style.recommandWrapper}>
               <Text style={Style.recommandTitle}>相关推荐</Text>
-              <ListView
-                style={Style.recommandList}
-                dataSource={this.state.recommandListData}
-                renderRow={(rowData) => this._renderRow(rowData)}
-              />
-              <View style={Style.recommandAll}>
-                <TouchableOpacity
-                  onPress={this._showAll.bind(this)}
-                  >
-                  <Text style={Style.recommandAllText}>全部</Text>
-                </TouchableOpacity>
+              <View style={Style.recommandList}>
+                { this.state.recommandListData }
               </View>
+                {this.state.recommandAllShow && (<View style={Style.recommandAll}>
+                  <TouchableOpacity
+                    onPress={this._showAll.bind(this)}
+                  >
+                    <Text style={this.state.recommandAllText}>全部</Text>
+                  </TouchableOpacity>
+              </View>)}
             </View>
           </View>
         </ScrollView>
-        <View style={Style.commentContainer}>
-          <Text style={Style.commentText}>comment here</Text>
-        </View>
+        <Comment />
       </View>
     )
   }
@@ -266,71 +234,8 @@ const Style = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
-  navContainer: {
-    width: width,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
   contentContainer: {
     backgroundColor: '#fff'
-  },
-  navLeft: {
-    flex: 1,
-    width: 100,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: 12
-  },
-  navRight: {
-    flex: 1,
-    width: 50,
-    height: 50,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 12
-  },
-  navItem: {
-    marginRight: 10
-  },
-  back: {
-    width: 22,
-    height: 22,
-    marginLeft: 3,
-    marginRight: 3,
-    backgroundColor: '#fff'
-  },
-  cat: {
-    flex: 1,
-    width: 22,
-    height: 22,
-    borderRadius: 50,
-  },
-  username: {
-    fontSize: 15
-  },
-  follow: {
-    width: 60,
-    height: 22,
-    borderRadius: 2,
-    borderWidth: .6,
-    borderColor: '#0392d8',
-    flexDirection: 'row',
-    alignItems:'center',
-    justifyContent: 'center'
-  },
-  followText: {
-    color: '#0392d8'
-  },
-  menu: {
-    width: 20,
-    height: 20,
-    marginLeft: 15,
-    marginRight: 3
   },
   video: {
     width: width,
@@ -447,9 +352,7 @@ const Style = StyleSheet.create({
     alignItems: 'center'
   },
   recommandAllText: {
-    width: width,
-    fontSize: 14,
-    textAlign: 'center'
+
   },
   commentContainer: {
     width: width,
