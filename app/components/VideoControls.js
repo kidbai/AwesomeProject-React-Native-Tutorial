@@ -2,20 +2,38 @@
 
 import React, {Component} from 'react'
 
-import {StyleSheet, View, Dimensions, Image, TouchableWithoutFeedback} from 'react-native'
+import {StyleSheet, View, Dimensions, Image, Text, TouchableNativeFeedback, Animated, Easing} from 'react-native'
 
 import Video from 'react-native-video'
 
-const windowWdith = Dimensions
-  .get('window')
-  .width
-const defaultHeight = windowWdith
+const {width, height} = Dimensions.get('window')
 
 class VideoControls extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      paused: false
+      style: {
+        controlsContainer: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: 2,
+          opacity: 0
+        }
+      },
+      barBtn: {
+        position: 'absolute',
+        width: 20,
+        height: 20,
+        left: new Animated.Value(0),
+        backgroundColor: '#fff',
+        borderRadius: 50
+      },
+      progressBar: 0,
+      lastProgressbar: 0,
+      newProgressBar: 0
     }
   }
 
@@ -23,68 +41,127 @@ class VideoControls extends Component {
     this
       .props
       ._paused()
-    const pausedStat = this.state.paused
+  }
+
+  toggleControls() {
     this.setState({
-      paused: !pausedStat
+      style: {
+        controlsContainer: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          zIndex: 2,
+          opacity: this.state.style.controlsContainer.opacity === 0 ? 1 : 0
+        }
+      }
     })
   }
 
-  hiddenControls() {
-    console.log('[ass')
+  triggerFullScreen () {
     this
       .props
-      ._hiddenControls()
+      ._triggerFullScreen()
+  }
+
+  setProgress(event) {
+    this.setState({
+      progressBar: event.nativeEvent.layout.width
+    })
+  }
+
+  componentWillReceiveProps() {
+    console.log(this.state.barBtn.left)
+    if (this.props.duration === 0) {
+      return false
+    }
+    const width = (this.props.currentTime / this.props.duration) * this.state.progressBar
+    console.log(width)
+    this.setState({
+      lastProgressbar: this.state.newProgressBar,
+      newProgressBar: width,
+    })
+    Animated.timing(
+      this.state.barBtn.left,
+      {
+        toValue: 1,
+        duration: 50,
+        easing: Easing.linear
+      }
+    ).start()
   }
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.hiddenControls.bind(this)}>
-        <View style={Style.controlsContainer}>
+      <TouchableNativeFeedback onPress={this.toggleControls.bind(this)}>
+        <View style={this.state.style.controlsContainer}>
           <View style={Style.controlsShadow}></View>
           <View style={Style.controls}>
             <View style={Style.pausedControls}>
-              {this.state.paused && (
-                <TouchableWithoutFeedback
+              {this.props.paused && (
+                <TouchableNativeFeedback
                   onPress={this
                   .paused
                   .bind(this)}>
                   <Image style={Style.play} source={require('../assets/img/start.png')}/>
-                </TouchableWithoutFeedback>
+                </TouchableNativeFeedback>
               )}
-              {!this.state.paused && (
-                <TouchableWithoutFeedback
+              {!this.props.paused && (
+                <TouchableNativeFeedback
                   onPress={this
                   .paused
                   .bind(this)}>
                   <Image style={Style.play} source={require('../assets/img/pause.png')}/>
-                </TouchableWithoutFeedback>
+                </TouchableNativeFeedback>
               )}
             </View>
             <View style={Style.nextControls}>
-              <TouchableWithoutFeedback
+              <TouchableNativeFeedback
                 onPress={this
                 .paused
                 .bind(this)}>
                 <Image style={Style.play} source={require('../assets/img/next.png')}/>
-              </TouchableWithoutFeedback>
+              </TouchableNativeFeedback>
+            </View>
+            <View style={Style.progressWrap}>
+              <View style={Style.progress}>
+                <View style={Style.durationWrap}>
+                  <Text style={Style.duration}>00:00</Text>
+                </View>
+                <View style={Style.progressBar}>
+                  <View style={Style.barWrap}>
+                    <View style={Style.bar} onLayout={(event) => this.setProgress(event)}>
+                    </View>
+                  </View>
+                  <Animated.View style={[this.state.barBtn, {transform: [{
+                    translateX: this.state.barBtn.left.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [this.state.lastProgressbar, this.state.newProgressBar]
+                      })
+                  }]}]}>
+                  </Animated.View>
+                </View>
+                <View style={Style.fullscreen}>
+                  <TouchableNativeFeedback
+                    onPress={this.triggerFullScreen.bind(this)}
+                  >
+                    <Image
+                      style={Style.fullscreenImg}
+                      source={require('../assets/img/fullscreen.png')}
+                    />
+                  </TouchableNativeFeedback>
+                </View>
+              </View>
             </View>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableNativeFeedback>
     )
   }
-
 }
 
 const Style = StyleSheet.create({
-  controlsContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    zIndex: 2
-  },
   controlsShadow: {
     position: 'absolute',
     top: 0,
@@ -120,6 +197,50 @@ const Style = StyleSheet.create({
   play: {
     width: 40,
     height: 40
+  },
+  progressWrap: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  progress: {
+    width: width,
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  durationWrap: {
+    flex: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  duration: {
+    fontSize: 12,
+    color: '#fff'
+  },
+  progressBar: {
+    flex: 7,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  barWrap: {
+    height: 4,
+    backgroundColor: '#f1f1f1'
+  },
+
+  fullscreen: {
+    flex: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  fullscreenImg: {
+    width: 30,
+    height: 30
   }
 })
 

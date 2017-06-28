@@ -65,7 +65,8 @@ class Video extends Component {
         fontSize: 14,
         textAlign: 'center'
       },
-      recommandAllShow: true
+      recommandAllShow: true,
+      fullScreen: false
     }
   }
 
@@ -164,17 +165,23 @@ class Video extends Component {
     })
   }
 
+  _triggerFullScreen () {
+    this.setState({
+      fullScreen: true
+    })
+  }
+
   render() {
     return (
       <View style={Style.container}>
-        <Navigator />
+        {!this.state.fullScreen && (<Navigator />)}
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={Style.contentContainer}>
           <View style={Style.video}>
-            <VideoPlayer videoLink={this.state.videoLink}></VideoPlayer>
+            <VideoPlayer videoLink={this.state.videoLink} _triggerFullScreen={this._triggerFullScreen.bind(this)}></VideoPlayer>
           </View>
-          <View>
+          {!this.state.fullScreen && (<View>
             <View style={Style.titleContainer}>
               <Text style={Style.title}>这波操作太6了，这是一个能成为王者的超级兵</Text>
             </View>
@@ -221,9 +228,9 @@ class Video extends Component {
                   </TouchableOpacity>
               </View>)}
             </View>
-          </View>
+          </View>)}
         </ScrollView>
-        <Comment />
+        {!this.state.fullScreen && (<Comment />)}
       </View>
     )
   }
