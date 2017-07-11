@@ -52,7 +52,6 @@ class VideoPlayer extends Component {
 
 
   onLoad = (data) => {
-    console.log(data)
     const newHeight = (this.state.style.width * data.naturalSize.height) / data.naturalSize.width
     this.setState({
       style: {

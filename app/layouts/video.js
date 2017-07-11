@@ -16,13 +16,17 @@ import {
   NativeModules,
   Animated,
   Easing,
-  ListView
+  ListView,
+  TextInput,
+  Button
 } from 'react-native'
 
 import VideoPlayer from '../components/VideoPlayer'
 import uuidv4 from 'uuid/v4'
 import Navigator from '../components/Navigator.js'
 import Comment from '../components/Comment.js'
+import CommentInput from '../components/CommentInput.js'
+import CommentList from '../components/CommentList.js'
 
 const {width, height} = Dimensions.get('window')
 
@@ -66,7 +70,9 @@ class Video extends Component {
         textAlign: 'center'
       },
       recommandAllShow: true,
-      fullScreen: false
+      fullScreen: false,
+      commentText: '',
+      commentShow: false
     }
   }
 
@@ -171,6 +177,12 @@ class Video extends Component {
     })
   }
 
+  commentClick () {
+    this.setState({
+      commentShow: !this.state.commentShow
+    })
+  }
+
   render() {
     return (
       <View style={Style.container}>
@@ -202,15 +214,15 @@ class Video extends Component {
               <View style={Style.acitionRight}>
                 <Image
                   style={Style.likeUser}
-                  source={require('../assets/img/head.png')}
+                  source={require('../assets/img/avatar.jpg')}
                 />
                 <Image
                   style={Style.likeUser}
-                  source={require('../assets/img/head.png')}
+                  source={require('../assets/img/avatar.jpg')}
                 />
                 <Image
                   style={Style.likeUser}
-                  source={require('../assets/img/head.png')}
+                  source={require('../assets/img/avatar.jpg')}
                 />
                 <Text style={Style.praisedNum}>18万赞</Text>
               </View>
@@ -228,9 +240,13 @@ class Video extends Component {
                   </TouchableOpacity>
               </View>)}
             </View>
+            <CommentList />
           </View>)}
         </ScrollView>
-        {!this.state.fullScreen && (<Comment />)}
+        <Comment
+          commentClick={this.commentClick.bind(this)}
+        />
+        {this.state.commentShow && (<CommentInput commentShadowClick={this.commentClick.bind(this)}/>)}
       </View>
     )
   }
@@ -360,15 +376,6 @@ const Style = StyleSheet.create({
   },
   recommandAllText: {
 
-  },
-  commentContainer: {
-    width: width,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  commentText: {
-    width: width
   }
 })
 

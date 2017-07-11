@@ -9,8 +9,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableNativeFeedback,
   NativeModules,
   Dimensions
 } from 'react-native'
@@ -43,18 +42,22 @@ class Navigator extends Component {
     }
   }
 
+  _share () {
+    NativeModules.ToastAndroid.show('Right Btn', 300)
+  }
+
   render() {
     return (
       <View style={Style.navContainer}>
         <View style={Style.navLeft}>
           <View style={Style.navItem}>
-            <TouchableOpacity
+            <TouchableNativeFeedback
               onPress={this._backward.bind(this)}>
               <Image
                 style={Style.back}
                 source={require('../assets/img/back.png')}
               />
-            </TouchableOpacity>
+            </TouchableNativeFeedback>
           </View>
           <View style={Style.navItem}>
             <Image
@@ -68,17 +71,21 @@ class Navigator extends Component {
         </View>
         <View style={Style.navRight}>
           <View style={Style.follow}>
-            <TouchableOpacity
+            <TouchableNativeFeedback
               onPress={this._followOnPress.bind(this)}
               >
               <Text style={Style.followText}>{this.state.follow.text}</Text>
-            </TouchableOpacity>
+            </TouchableNativeFeedback>
           </View>
           <View>
-            <Image
-              style={Style.menu}
-              source={require('../assets/img/menu.png')}
-            />
+            <TouchableNativeFeedback
+              onPress={this._share.bind(this)}
+            >
+              <Image
+                style={Style.menu}
+                source={require('../assets/img/menu.png')}
+              />
+            </TouchableNativeFeedback>
           </View>
         </View>
       </View>

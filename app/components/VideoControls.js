@@ -29,7 +29,17 @@ class VideoControls extends Component {
         height: 20,
         left: new Animated.Value(0),
         backgroundColor: '#fff',
-        borderRadius: 50
+        borderRadius: 50,
+        zIndex: 1
+      },
+      progressPlayed: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 4,
+        backgroundColor: '#42bcf4',
+        zIndex: 2
       },
       progressBar: 0,
       lastProgressbar: 0,
@@ -72,24 +82,23 @@ class VideoControls extends Component {
   }
 
   componentWillReceiveProps() {
-    console.log(this.state.barBtn.left)
     if (this.props.duration === 0) {
       return false
     }
     const width = (this.props.currentTime / this.props.duration) * this.state.progressBar
-    console.log(width)
-    this.setState({
-      lastProgressbar: this.state.newProgressBar,
-      newProgressBar: width,
-    })
-    Animated.timing(
-      this.state.barBtn.left,
-      {
-        toValue: 1,
-        duration: 50,
-        easing: Easing.linear
-      }
-    ).start()
+  //   this.setState({
+  //     lastProgressbar: this.state.newProgressBar,
+  //     newProgressBar: width,
+  //     progressPlayed: width
+  //   })
+  //   Animated.timing(
+  //     this.state.barBtn.left,
+  //     {
+  //       toValue: 1,
+  //       duration: 50,
+  //       easing: Easing.linear
+  //     }
+  //   ).start()
   }
 
   render() {
@@ -132,6 +141,8 @@ class VideoControls extends Component {
                 <View style={Style.progressBar}>
                   <View style={Style.barWrap}>
                     <View style={Style.bar} onLayout={(event) => this.setProgress(event)}>
+                    </View>
+                    <View style={this.state.progressPlayed}>
                     </View>
                   </View>
                   <Animated.View style={[this.state.barBtn, {transform: [{
@@ -229,10 +240,19 @@ const Style = StyleSheet.create({
     paddingRight: 10
   },
   barWrap: {
+    position: 'relative',
     height: 4,
-    backgroundColor: '#f1f1f1'
+    // backgroundColor: '#f1f1f1'
   },
-
+  bar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#f1f1f1',
+    zIndex: 1
+  },
   fullscreen: {
     flex: 1.5,
     justifyContent: 'center',

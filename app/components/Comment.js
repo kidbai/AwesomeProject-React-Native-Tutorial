@@ -1,8 +1,6 @@
 'use strict'
 
-import React, {
-  Component
-} from 'react'
+import React, {Component} from 'react'
 
 import {
   StyleSheet,
@@ -10,7 +8,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableNativeFeedback,
   NativeModules,
   Dimensions
 } from 'react-native'
@@ -21,39 +19,50 @@ class Comment extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      sendCommentStat: true
     }
+  }
+
+  comment() {
+    this
+      .props
+      .commentClick()
+  }
+
+  share () {
+    NativeModules.ToastAndroid.show('Share', 300)
   }
 
   render() {
     return (
-      <View style={Style.commentContainer}>
-        <View style={Style.commentBtn}>
-          <Text style={Style.commentBtnText}>骚年，来一发评论吧</Text>
-        </View>
-        <View style={Style.iconList}>
-          <View style={Style.iconItem}>
-            <Image
-              style={Style.icon}
-              source={require('../assets/img/share.png')}
-            />
-          </View>
-          <View style={Style.iconItem}>
-            <Image
-              style={Style.icon}
-              source={require('../assets/img/message.png')}
-            />
-            <View style={Style.badge}>
-              <Text style={Style.badgeText}>4123</Text>
+        <View style={Style.commentContainer}>
+          <TouchableNativeFeedback
+            onPress={this
+            .comment
+            .bind(this)}>
+            <View style={Style.commentBtn}>
+              <Text style={Style.commentBtnText}>骚年，来一发评论吧</Text>
+            </View>
+          </TouchableNativeFeedback>
+          <View style={Style.iconList}>
+            <TouchableNativeFeedback
+              onPress={this.share.bind(this)}
+            >
+              <View style={Style.iconItem}>
+                <Image style={Style.icon} source={require('../assets/img/share.png')}/>
+              </View>
+            </TouchableNativeFeedback>
+            <View style={Style.iconItem}>
+              <Image style={Style.icon} source={require('../assets/img/message.png')}/>
+              <View style={Style.badge}>
+                <Text style={Style.badgeText}>4123</Text>
+              </View>
+            </View>
+            <View style={Style.iconItem}>
+              <Image style={Style.icon} source={require('../assets/img/like.png')}/>
             </View>
           </View>
-          <View style={Style.iconItem}>
-            <Image
-              style={Style.icon}
-              source={require('../assets/img/like.png')}
-            />
-          </View>
         </View>
-      </View>
     )
   }
 }
@@ -69,7 +78,8 @@ const Style = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     borderTopColor: '#f2f2f2',
-    borderTopWidth: 1
+    borderTopWidth: 1,
+    backgroundColor: '#fff'
   },
   commentBtn: {
     flex: 6,
