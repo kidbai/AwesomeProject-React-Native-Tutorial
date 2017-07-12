@@ -52,6 +52,7 @@ class VideoPlayer extends Component {
 
 
   onLoad = (data) => {
+    console.log(data)
     const newHeight = (this.state.style.width * data.naturalSize.height) / data.naturalSize.width
     this.setState({
       style: {
@@ -72,6 +73,14 @@ class VideoPlayer extends Component {
     this.setState({
       currentTime: data.currentTime,
       playableDuration: data.playableDuration
+    },() => {
+    })
+  }
+
+  onEnd = () => {
+    this.setState({
+      currentTime: 0,
+    }, () => {
     })
   }
 
@@ -87,6 +96,12 @@ class VideoPlayer extends Component {
       ._triggerFullScreen()
   }
 
+  _seek (second) {
+    console.log('father')
+    console.log(second)
+    console.log(this.player)
+    this.player.seek(second)
+  }
 
   render() {
     return (
@@ -98,6 +113,7 @@ class VideoPlayer extends Component {
           currentTime={this.state.currentTime}
           playableDuration={this.state.playableDuration}
           _triggerFullScreen={this._triggerFullScreen.bind(this)}
+          _seek={(second) => this._seek(second)}
         />
         <TouchableNativeFeedback
         >
@@ -110,7 +126,7 @@ class VideoPlayer extends Component {
               muted={false}                           // Mutes the audio entirely.
               paused={this.state.paused}                          // Pauses playback entirely.
               resizeMode="contain"                      // Fill the whole screen at aspect ratio.*
-              repeat={false}                           // Repeat forever.
+              repeat={true}                           // Repeat forever.
               playInBackground={false}                // Audio continues to play when app entering background.
               playWhenInactive={false}                // [iOS] Video continues to play when control or notification center are shown.
               ignoreSilentSwitch={"ignore"}           // [iOS] ignore | obey - When 'ignore', audio will still play with the iOS hard silent switch set to silent. When 'obey', audio will toggle with the switch. When not specified, will inherit audio settings as usual.
@@ -118,7 +134,7 @@ class VideoPlayer extends Component {
               //  onLoadStart={this.loadStart}            // Callback when video starts to load
               onLoad={this.onLoad}               // Callback when video loads
               onProgress={this.onProgress}               // Callback every ~250ms with currentTime
-              //  onEnd={this.onEnd}                      // Callback when playback finishes
+              onEnd={this.onEnd}                      // Callback when playback finishes
               onError={this.onError}               // Callback when video cannot be loaded
               //  onBuffer={this.onBuffer}                // Callback when remote video is buffering
               //  onTimedMetadata={this.onTimedMetadata}  // Callback when the stream receive some metadata

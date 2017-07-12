@@ -61,7 +61,8 @@ class Video extends Component {
       ],
       spin: new Animated.Value(0),
       like: new Animated.Value(0),
-      likeImg: require('../assets/img/like.png'),
+      likeCount: new Animated.Value(0),
+      likeImgShow: false,
       // recommandListData: ds,
       recommandListData: [],
       recommandAllText: {
@@ -72,7 +73,7 @@ class Video extends Component {
       recommandAllShow: true,
       fullScreen: false,
       commentText: '',
-      commentShow: false
+      commentShow: false,
     }
   }
 
@@ -88,23 +89,52 @@ class Video extends Component {
     ).start(() => this.animate())
   }
 
-  likeAnimate () {
-    this.state.like.setValue(0)
-    Animated.timing(
-      this.state.like,
-      {
-        toValue: 1,
-        duration: 500,
-        easing: Easing.linear
-      }
-    ).start(()=> this.likeAnimate())
+  _likeAnimate () {
+    Animated.parallel([
+      Animated.sequence([
+        Animated.timing(
+          this.state.like,
+          {
+          toValue: 1,
+            duration: 200,
+            easing: Easing.linear
+          }
+        ),
+        Animated.timing(
+          this.state.like,
+          {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.linear
+          }
+        )
+      ]),
+      Animated.sequence([
+        Animated.timing(
+          this.state.likeCount,
+          {
+          toValue: 1,
+            duration: 200,
+            easing: Easing.linear
+          }
+        ),
+        Animated.timing(
+          this.state.likeCount,
+          {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.linear
+          }
+        )
+      ]),
+    ]).start()
   }
 
   _like () {
     this.setState({
-      likeImg: require('../assets/img/like_on.png')
+      likeImgShow: true
     }, ()=> {
-      this.likeAnimate()
+      this._likeAnimate()
     })
   }
 
@@ -157,6 +187,14 @@ class Video extends Component {
       title: (Math.random() * 1000).toFixed(0),
       playTime: (Math.random() * 1000).toFixed(0),
       uuid: uuidv4()
+    },{
+      title: (Math.random() * 1000).toFixed(0),
+      playTime: (Math.random() * 1000).toFixed(0),
+      uuid: uuidv4()
+    },{
+      title: (Math.random() * 1000).toFixed(0),
+      playTime: (Math.random() * 1000).toFixed(0),
+      uuid: uuidv4()
     }]
     const appendData = []
     for(let i = 0;i < newData.length;i++){
@@ -183,6 +221,10 @@ class Video extends Component {
     })
   }
 
+  getComponentHeight (event) {
+    console.log(event)
+  }
+
   render() {
     return (
       <View style={Style.container}>
@@ -199,7 +241,18 @@ class Video extends Component {
             </View>
             <View style={Style.actionContainer}>
               <View style={Style.acitionLeft}>
-                <TouchableWithoutFeedback onPress={this._like.bind(this)}>
+                <Animated.Text style={[Style.likeCount, {opacity: this.state.likeCount,
+                fontSize: this.state.likeCount.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [12, 15]
+                })}]}>+1</Animated.Text>
+                {!this.state.likeImgShow && (<TouchableWithoutFeedback onPress={this._like.bind(this)}>
+                  <Image
+                    style={Style.like}
+                    source={require('../assets/img/like.png')}
+                  />
+                </TouchableWithoutFeedback>)}
+                {this.state.likeImgShow && (<TouchableWithoutFeedback>
                   <Animated.Image
                     style={[Style.like, {transform: [{
                       scale: this.state.like.interpolate({
@@ -207,9 +260,9 @@ class Video extends Component {
                         outputRange: [1, 1.3]
                       })
                     }]}]}
-                    source={this.state.likeImg}
+                    source={require('../assets/img/like_on.png')}
                   />
-                </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>)}
               </View>
               <View style={Style.acitionRight}>
                 <Image
@@ -229,7 +282,7 @@ class Video extends Component {
             </View>
             <View style={Style.recommandWrapper}>
               <Text style={Style.recommandTitle}>相关推荐</Text>
-              <View style={Style.recommandList}>
+              <View style={Style.recommandList} onLayout={(event) => this.getComponentHeight(event)}>
                 { this.state.recommandListData }
               </View>
                 {this.state.recommandAllShow && (<View style={Style.recommandAll}>
@@ -265,7 +318,10 @@ const Style = StyleSheet.create({
     backgroundColor: '#000'
   },
   titleContainer: {
-    margin: 10,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 0,
     zIndex: 1
   },
   title: {
@@ -273,7 +329,7 @@ const Style = StyleSheet.create({
     color: '#000'
   },
   actionContainer: {
-    paddingTop: 5,
+    paddingTop: 10,
     paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 10,
@@ -376,6 +432,15 @@ const Style = StyleSheet.create({
   },
   recommandAllText: {
 
+  },
+  likeCount: {
+    position: 'absolute',
+    top: -14,
+    left: 4,
+    fontSize: 12,
+    color: '#1F8FCD',
+    opacity: 1,
+    fontWeight: 'bold'
   }
 })
 

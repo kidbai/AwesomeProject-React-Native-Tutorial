@@ -90,6 +90,7 @@ class CommentList extends Component {
           <Text style={Style.commentTitle}>最新评论</Text>
         </View>
         <ListView
+          initialListSize={4}
           dataSource={this.state.commentList}
           renderRow={(rowData) => this._renderRow(rowData)}
         />

@@ -2,9 +2,10 @@
 
 import React, {Component} from 'react'
 
-import {StyleSheet, View, Dimensions, Image, Text, TouchableNativeFeedback, Animated, Easing} from 'react-native'
+import {StyleSheet, View, Dimensions, Image, Text, TouchableNativeFeedback, Animated, Easing, PanResponder} from 'react-native'
 
 import Video from 'react-native-video'
+import { formatTime } from '../utils'
 
 const {width, height} = Dimensions.get('window')
 
@@ -23,14 +24,17 @@ class VideoControls extends Component {
           opacity: 0
         }
       },
+      controlsStat: {
+        show: false
+      },
       barBtn: {
         position: 'absolute',
         width: 20,
         height: 20,
-        left: new Animated.Value(0),
+        left: 10,
         backgroundColor: '#fff',
         borderRadius: 50,
-        zIndex: 1
+        zIndex: 3
       },
       progressPlayed: {
         position: 'absolute',
@@ -41,13 +45,31 @@ class VideoControls extends Component {
         backgroundColor: '#42bcf4',
         zIndex: 2
       },
+      progressPlayabled: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: 4,
+        backgroundColor: '#f2f2f2',
+        zIndex: 2
+      },
       progressBar: 0,
-      lastProgressbar: 0,
-      newProgressBar: 0
+      playabled: 0,
+      played: 0,
+      barBtnPosition: 10,
+      barBtnPositionInit: 10,
+      videoStart: 10,
+      progressBarInc: 0,
+      barBtnDragStat: false,
+      playTime: '00:00'
     }
   }
 
   paused() {
+    if (this.state.controlsStat.show === false) {
+      this.toggleControls()
+      return false
+    }
     this
       .props
       ._paused()
@@ -65,6 +87,9 @@ class VideoControls extends Component {
           zIndex: 2,
           opacity: this.state.style.controlsContainer.opacity === 0 ? 1 : 0
         }
+      },
+      controlsStat: {
+        show: this.state.style.controlsContainer.opacity === 0 ? true : false
       }
     })
   }
@@ -75,30 +100,62 @@ class VideoControls extends Component {
       ._triggerFullScreen()
   }
 
+  seek (second) {
+    this.props._seek(second)
+  }
+
   setProgress(event) {
     this.setState({
       progressBar: event.nativeEvent.layout.width
+    }, () => {
     })
   }
 
-  componentWillReceiveProps() {
-    if (this.props.duration === 0) {
+  componentWillMount(){
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: ()=> true,
+      onPanResponderGrant: ()=>{
+      },
+      onPanResponderMove: (evt,gs)=>{
+        this.setState({
+          barBtnPosition: this.state.barBtnPositionInit + gs.dx,
+          played: this.state.barBtnPositionInit + gs.dx,
+          barBtnDragStat: true
+        }, ()=> {
+        })
+      },
+      onPanResponderRelease: (evt,gs)=>{
+        this.setState({
+          barBtnDragStat: false,
+          barBtnPositionInit: this.state.barBtnPosition
+        }, ()=> {
+          const second = (this.state.barBtnPosition / this.state.progressBar) * this.props.duration
+          this.seek(second)
+        })
+      }
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.duration === 0 || this.state.progressBar === 0) {
       return false
     }
-    const width = (this.props.currentTime / this.props.duration) * this.state.progressBar
-  //   this.setState({
-  //     lastProgressbar: this.state.newProgressBar,
-  //     newProgressBar: width,
-  //     progressPlayed: width
-  //   })
-  //   Animated.timing(
-  //     this.state.barBtn.left,
-  //     {
-  //       toValue: 1,
-  //       duration: 50,
-  //       easing: Easing.linear
-  //     }
-  //   ).start()
+    const width = (nextProps.currentTime / nextProps.duration) * this.state.progressBar
+    const playabled = (nextProps.playableDuration / nextProps.duration) * this.state.progressBar
+    const played = (nextProps.currentTime / nextProps.duration) * this.state.progressBar
+    this.setState({
+      playabled: playabled
+    })
+    if (!this.state.barBtnDragStat) {
+      this.setState({
+        played: played,
+        barBtnPosition: played,
+        barBtnPositionInit: played,
+        playTime: formatTime(nextProps.currentTime)
+      })
+    }
+
   }
 
   render() {
@@ -136,22 +193,22 @@ class VideoControls extends Component {
             <View style={Style.progressWrap}>
               <View style={Style.progress}>
                 <View style={Style.durationWrap}>
-                  <Text style={Style.duration}>00:00</Text>
+                  <Text style={Style.duration}>{this.state.playTime}</Text>
                 </View>
                 <View style={Style.progressBar}>
                   <View style={Style.barWrap}>
-                    <View style={Style.bar} onLayout={(event) => this.setProgress(event)}>
+                    <View style={Style.bar}
+                      onLayout={(event) => this.setProgress(event)}>
                     </View>
-                    <View style={this.state.progressPlayed}>
+                    <View style={[this.state.progressPlayabled, {width: this.state.playabled}]}>
+                    </View>
+                    <View style={[this.state.progressPlayed, {width: this.state.played}]}>
                     </View>
                   </View>
-                  <Animated.View style={[this.state.barBtn, {transform: [{
-                    translateX: this.state.barBtn.left.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [this.state.lastProgressbar, this.state.newProgressBar]
-                      })
-                  }]}]}>
-                  </Animated.View>
+                  <View
+                    {...this._panResponder.panHandlers}
+                    style={[this.state.barBtn, {left: this.state.barBtnPosition}]}>
+                  </View>
                 </View>
                 <View style={Style.fullscreen}>
                   <TouchableNativeFeedback
@@ -250,7 +307,6 @@ const Style = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: '#f1f1f1',
     zIndex: 1
   },
   fullscreen: {
