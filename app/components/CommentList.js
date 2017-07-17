@@ -9,22 +9,20 @@ import {
   Text,
   Dimensions,
   NativeModules,
-  ListView
+  FlatList
 } from 'react-native'
 
 const {width, height} = Dimensions.get('window')
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class CommentList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      commentList: ds.cloneWithRows(['normal 1', 'vip', 'normal 2', 'reply'])
+      commentList: ['normal 1', 'vip', 'normal 2', 'reply']
     }
   }
 
-  _renderRow (rowData) {
-    return (
+  _renderRow = (item) => {
       <View style={Style.commentList}>
         <View style={Style.user}>
           <View style={Style.left}>
@@ -35,7 +33,7 @@ class CommentList extends Component {
               />
             </View>
             <View style={Style.username}>
-              <Text style={ rowData === 'vip' ? Style.usernameVip : ''}>{ rowData }</Text>
+              <Text style={ item === 'vip' ? Style.usernameVip : ''}>{ item }</Text>
             </View>
           </View>
           <View style={Style.right}>
@@ -44,7 +42,7 @@ class CommentList extends Component {
                 style={Style.likeImg}
                 source={require('../assets/img/like.png')}
               />
-              {rowData === 'vip' && (<Text style={Style.praiseNum}>2</Text>)}
+              {item === 'vip' && (<Text style={Style.praiseNum}>2</Text>)}
             </View>
           </View>
 
@@ -59,14 +57,14 @@ class CommentList extends Component {
           <View style={Style.city}>
             <Text style={Style.cityName}>沈阳</Text>
           </View>
-          { rowData === 'vip' && (<View style={Style.vip}>
+          { item === 'vip' && (<View style={Style.vip}>
             <Text style={Style.vipLevel}>VIP 7</Text>
           </View>) }
         </View>
         <View style={Style.commentContent}>
-          <Text style={Style.commentContentText}>{ rowData + 'blahblahblah'}</Text>
+          <Text style={Style.commentContentText}>{ item + 'blahblahblah'}</Text>
         </View>
-        { rowData === 'reply' && (<View style={Style.reply}>
+        { item === 'reply' && (<View style={Style.reply}>
           <View>
             <Text style={Style.replyUser}>
               father
@@ -80,7 +78,12 @@ class CommentList extends Component {
           <Text style={Style.timeText}>43分钟前</Text>
         </View>
       </View>
-    )
+  }
+
+  _keyExtractor = (item, index) => {
+    console.log(item)
+    console.log(index)
+    return index
   }
 
   render () {
@@ -89,10 +92,10 @@ class CommentList extends Component {
         <View>
           <Text style={Style.commentTitle}>最新评论</Text>
         </View>
-        <ListView
-          initialListSize={4}
-          dataSource={this.state.commentList}
-          renderRow={(rowData) => this._renderRow(rowData)}
+        <FlatList
+          data={this.state.commentList}
+          renderItem={this._renderRow}
+          keyExtractor={this._keyExtractor}
         />
       </View>
     )

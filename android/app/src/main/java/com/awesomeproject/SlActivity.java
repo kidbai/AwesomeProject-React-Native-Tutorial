@@ -26,7 +26,7 @@ public class SlActivity extends Activity {
             public void onClick(View v) {
             // 给bnt1添加点击响应事件
             Intent intent = new Intent(SlActivity.this, MainActivity.class);
-            intent.putExtra("data","http://video.kcloud.n0808.com/6417741cdeaf614db7996d0f795d06436e1fe094?sign=bd90b64334970596eda701aab2f71ea1&t=5966327e&hash=c767b102ab4f3899c2a38a4268a61176&ts=1499869822");
+            intent.putExtra("data","http://video.kcloud.n0808.com/2bc4b53cd16d05681aad6980ba5f46377841a05f?sign=36a88e0aea0ec6a5b32fababc81cd33f&t=596cd28d&hash=c64aec3535c05c681d4e90a2eb794558&ts=1500304013");
             //启动
             startActivity(intent);
             }

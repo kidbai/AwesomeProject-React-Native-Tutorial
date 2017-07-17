@@ -118,6 +118,9 @@ class VideoControls extends Component {
       onPanResponderGrant: ()=>{
       },
       onPanResponderMove: (evt,gs)=>{
+        if (this.state.barBtnPositionInit + gs.dx < 0 || this.state.barBtnPositionInit + gs.dx > this.state.progressBar) {
+          return false
+        }
         this.setState({
           barBtnPosition: this.state.barBtnPositionInit + gs.dx,
           played: this.state.barBtnPositionInit + gs.dx,
@@ -200,8 +203,11 @@ class VideoControls extends Component {
                     <View style={Style.bar}
                       onLayout={(event) => this.setProgress(event)}>
                     </View>
-                    <View style={[this.state.progressPlayabled, {width: this.state.playabled}]}>
-                    </View>
+                    <TouchableNativeFeedback
+                    >
+                      <View style={[this.state.progressPlayabled, {width: this.state.playabled}]}>
+                      </View>
+                    </TouchableNativeFeedback>
                     <View style={[this.state.progressPlayed, {width: this.state.played}]}>
                     </View>
                   </View>

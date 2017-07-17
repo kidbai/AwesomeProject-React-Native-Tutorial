@@ -97,9 +97,6 @@ class VideoPlayer extends Component {
   }
 
   _seek (second) {
-    console.log('father')
-    console.log(second)
-    console.log(this.player)
     this.player.seek(second)
   }
 
